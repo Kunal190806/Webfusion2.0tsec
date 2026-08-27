@@ -32,6 +32,7 @@ export const Layout = () => {
             <Link to="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Listings</Link>
             <Link to="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Requests</Link>
             <Link to="/impact" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Impact</Link>
+            <Link to="/admin" className="text-sm font-bold text-red-500 hover:text-red-700 transition-colors bg-red-50 px-2 py-1 rounded">Admin</Link>
           </nav>
 
           {/* Right Actions */}
@@ -45,6 +46,11 @@ export const Layout = () => {
               </div>
               <span className="text-sm font-semibold">Trust Score</span>
             </div>
+            <Link to="/login">
+              <Button variant="outline" className="hidden md:flex h-10 px-4 rounded-md font-semibold">
+                Login
+              </Button>
+            </Link>
             <Button className="hidden md:flex h-10 px-6 rounded-md font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
               + List Resource
             </Button>

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User, Resource, Transaction } from '../types';
+import { db } from '../services/firebase';
+import { collection, doc, setDoc, onSnapshot, updateDoc, query } from 'firebase/firestore';
 import { mockUsers, mockResources, mockTransactions } from '../data/mockData';
 
 interface AppState {
@@ -14,100 +16,116 @@ interface AppContextType extends AppState {
   updateTransactionStatus: (id: string, status: Transaction['status']) => void;
   processSettlement: (id: string, damageDeduction: number, isDispute?: boolean) => void;
   submitRating: (id: string, rating: number) => void;
-  addResource: (resource: Omit<Resource, 'id'>) => void;
+  addResource: (resource: Omit<Resource, 'id'>) => Promise<void>;
+  updateUser: (id: string, data: Partial<User>) => Promise<void>;
   resetDemo: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const INITIAL_STATE = {
-  users: mockUsers,
-  resources: mockResources,
-  transactions: mockTransactions,
-};
-
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('campusCircularStateV4');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return {
-      ...INITIAL_STATE,
-      currentUser: mockUsers.find(u => u.id === 'u3') || null,
-    };
+  const [state, setState] = useState<AppState>({
+    currentUser: mockUsers.find(u => u.id === 'u3') || null,
+    users: [],
+    resources: [],
+    transactions: [],
   });
+  
+  const [loading, setLoading] = useState(true);
 
+  // Seed DB if empty and Setup Listeners
   useEffect(() => {
-    localStorage.setItem('campusCircularStateV4', JSON.stringify(state));
-  }, [state]);
+    const seedIfEmpty = async () => {
+      // We rely on the snapshot listener to determine if it's empty, but to avoid race conditions,
+      // we'll just let the user see what's in Firebase. 
+      // If they want to seed, they can call a specific function.
+      // But for hackathon realistic purposes, we'll auto-seed if we get 0 resources.
+    };
 
-  const addRequest = (transactionData: Omit<Transaction, 'id' | 'status'>) => {
+    const unsubUsers = onSnapshot(collection(db, 'users'), (snap) => {
+      if (snap.empty) {
+        // Auto seed
+        mockUsers.forEach(u => setDoc(doc(db, 'users', u.id), u));
+      } else {
+        const users = snap.docs.map(d => d.data() as User);
+        setState(prev => ({ ...prev, users, currentUser: users.find(u => u.id === prev.currentUser?.id) || prev.currentUser }));
+      }
+    });
+
+    const unsubResources = onSnapshot(collection(db, 'resources'), (snap) => {
+      if (snap.empty) {
+        // Auto seed
+        mockResources.forEach(r => setDoc(doc(db, 'resources', r.id), r));
+      } else {
+        setState(prev => ({ ...prev, resources: snap.docs.map(d => d.data() as Resource) }));
+      }
+    });
+
+    const unsubTransactions = onSnapshot(collection(db, 'transactions'), (snap) => {
+      if (snap.empty) {
+        // Auto seed
+        mockTransactions.forEach(t => setDoc(doc(db, 'transactions', t.id), t));
+      } else {
+        setState(prev => ({ ...prev, transactions: snap.docs.map(d => d.data() as Transaction) }));
+      }
+    });
+
+    setLoading(false);
+
+    return () => {
+      unsubUsers();
+      unsubResources();
+      unsubTransactions();
+    };
+  }, []);
+
+  const addRequest = async (transactionData: Omit<Transaction, 'id' | 'status'>) => {
+    const id = `t_${Date.now()}`;
     const newTransaction: Transaction = {
       ...transactionData,
-      id: `t_${Date.now()}`,
+      id,
       status: 'Requested',
     };
-    setState(prev => ({
-      ...prev,
-      transactions: [...prev.transactions, newTransaction],
-    }));
+    await setDoc(doc(db, 'transactions', id), newTransaction);
   };
 
-  const updateTransactionStatus = (id: string, status: Transaction['status']) => {
-    setState(prev => ({
-      ...prev,
-      transactions: prev.transactions.map(t => 
-        t.id === id ? { ...t, status } : t
-      ),
-    }));
+  const updateTransactionStatus = async (id: string, status: Transaction['status']) => {
+    await updateDoc(doc(db, 'transactions', id), { status });
   };
 
-  const processSettlement = (id: string, damageDeduction: number, isDispute: boolean = false) => {
-    setState(prev => ({
-      ...prev,
-      transactions: prev.transactions.map(t => {
-        if (t.id === id) {
-          const totalRefund = t.securityDeposit - damageDeduction;
-          return {
-            ...t,
-            status: isDispute ? 'Disputed' : 'Settlement',
-            damageDeduction,
-            totalRefund: totalRefund > 0 ? totalRefund : 0,
-          } as Transaction;
-        }
-        return t;
-      }),
-    }));
+  const processSettlement = async (id: string, damageDeduction: number, isDispute?: boolean) => {
+    const tx = state.transactions.find(t => t.id === id);
+    if (!tx) return;
+    
+    await updateDoc(doc(db, 'transactions', id), {
+      status: isDispute ? 'Disputed' : 'Settlement',
+      damageDeduction,
+      totalRefund: tx.securityDeposit - tx.borrowingCharge - tx.platformFee - tx.lateFee - damageDeduction
+    });
   };
 
-  const submitRating = (id: string, rating: number) => {
-    setState(prev => ({
-      ...prev,
-      transactions: prev.transactions.map(t => 
-        t.id === id ? { ...t, status: 'Rated' } : t
-      ),
-    }));
+  const submitRating = async (id: string, rating: number) => {
+    await updateDoc(doc(db, 'transactions', id), { status: 'Rated' });
   };
 
-  const addResource = (resourceData: Omit<Resource, 'id'>) => {
+  const addResource = async (resourceData: Omit<Resource, 'id'>) => {
+    const id = `r_${Date.now()}`;
     const newResource: Resource = {
       ...resourceData,
-      id: `r_${Date.now()}`,
+      id,
     };
-    setState(prev => ({
-      ...prev,
-      resources: [...prev.resources, newResource],
-    }));
+    await setDoc(doc(db, 'resources', id), newResource);
+  };
+  
+  const updateUser = async (id: string, data: Partial<User>) => {
+    await updateDoc(doc(db, 'users', id), data);
   };
 
   const resetDemo = () => {
-    setState({
-      ...INITIAL_STATE,
-      currentUser: mockUsers.find(u => u.id === 'u3') || null,
-    });
-    localStorage.removeItem('campusCircularStateV4');
+    // Left empty for now, can implement a full collection wipe if needed
   };
+
+  if (loading) return null;
 
   return (
     <AppContext.Provider value={{
@@ -117,6 +135,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       processSettlement,
       submitRating,
       addResource,
+      updateUser,
       resetDemo
     }}>
       {children}

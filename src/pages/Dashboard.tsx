@@ -7,6 +7,7 @@ import { ConfettiButton } from '../components/ui/confetti';
 import { SettlementModal } from '../components/modals/SettlementModal';
 import { RatingModal } from '../components/modals/RatingModal';
 import { AddResourceModal } from '../components/modals/AddResourceModal';
+import { EditProfileModal } from '../components/modals/EditProfileModal';
 
 export const Dashboard = () => {
   const { transactions, resources, users, updateTransactionStatus, processSettlement, submitRating } = useAppContext();
@@ -14,6 +15,7 @@ export const Dashboard = () => {
   const [selectedTransactionForSettlement, setSelectedTransactionForSettlement] = useState<any>(null);
   const [selectedTransactionForRating, setSelectedTransactionForRating] = useState<any>(null);
   const [isAddResourceModalOpen, setIsAddResourceModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
 
   // Hardcode demo user "u3" for now since auth isn't fully implemented
   const currentUser = users.find(u => u.id === 'u3') || users[0];
@@ -53,6 +55,7 @@ export const Dashboard = () => {
             className="w-full"
             innerGradient="linear-gradient(145deg, #16352F 0%, #1A3129 100%)"
             behindGlowColor="rgba(22, 53, 47, 0.4)"
+            onContactClick={() => setIsEditProfileModalOpen(true)}
           />
         </div>
 
@@ -168,6 +171,15 @@ export const Dashboard = () => {
         isOpen={isAddResourceModalOpen} 
         onClose={() => setIsAddResourceModalOpen(false)} 
       />
+
+      {currentUser && (
+        <EditProfileModal
+          isOpen={isEditProfileModalOpen}
+          onClose={() => setIsEditProfileModalOpen(false)}
+          userId={currentUser.id}
+        />
+      )}
+
       {selectedTransactionForSettlement && (
         <SettlementModal
           isOpen={true}
