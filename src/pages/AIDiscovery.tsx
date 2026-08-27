@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../store/AppContext';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { generateRecommendations, AIRecommendation } from '../services/ai';
+import type { Resource } from '../types';
 
 export const AIDiscovery = () => {
   const [searchParams] = useSearchParams();
@@ -11,54 +13,65 @@ export const AIDiscovery = () => {
   const { resources } = useAppContext();
   
   const [isProcessing, setIsProcessing] = useState(true);
-  const [parsedContext, setParsedContext] = useState<any>(null);
+  const [parsedContext, setParsedContext] = useState<AIRecommendation | null>(null);
+  const [matchedItems, setMatchedItems] = useState<(Resource & { matchScore?: number })[]>([]);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
-    // Simulate AI parsing delay
-    const timer = setTimeout(() => {
-      const purpose = query.toLowerCase().includes('event') ? 'College Event' : 'General Purpose';
-      const needs = query.toLowerCase().includes('camera') ? 'Camera + Tripod + Microphone' : 'Resource';
-      const time = query.toLowerCase().includes('tomorrow') ? 'Tomorrow Evening' : 'Flexible';
-      const priority = 'Availability + Quality';
+    const fetchRecommendations = async () => {
+      setIsProcessing(true);
+      setApiError(false);
 
-      setParsedContext({ purpose, needs, time, priority });
+      if (!query.trim()) {
+        setIsProcessing(false);
+        return;
+      }
+
+      const recommendation = await generateRecommendations(query, resources);
+      
+      if (recommendation) {
+        setParsedContext(recommendation);
+        
+        // Map the IDs back to the actual resource objects
+        const matches = recommendation.matchedResourceIds
+          .map(id => resources.find(r => r.id === id))
+          .filter((r): r is Resource => r !== undefined)
+          .map(r => ({ ...r, matchScore: 98 })); // Give them a high score since AI picked them
+          
+        setMatchedItems(matches);
+      } else {
+        setApiError(true);
+      }
+      
       setIsProcessing(false);
-    }, 1500);
+    };
 
-    return () => clearTimeout(timer);
-  }, [query]);
+    fetchRecommendations();
+  }, [query, resources]);
 
   if (isProcessing) {
     return (
-      <div className="container mx-auto px-6 py-24 max-w-4xl">
-        <h2 className="text-xl font-medium animate-pulse text-muted-foreground">Finding resources that fit your requirement...</h2>
+      <div className="container mx-auto px-6 py-24 max-w-4xl text-center">
+        <div className="w-16 h-16 border-4 border-[#0F8A54] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+        <h2 className="text-xl font-medium animate-pulse text-muted-foreground">Consulting with AI Coordinator...</h2>
+        <p className="text-sm text-gray-500 mt-2">Analyzing your needs and scanning inventory.</p>
       </div>
     );
   }
 
-  // Simulated match algorithm
-  const matches = resources
-    .map(resource => {
-      const isCamera = resource.name.toLowerCase().includes('camera') && query.toLowerCase().includes('camera');
-      const isTripod = resource.name.toLowerCase().includes('tripod') && query.toLowerCase().includes('tripod');
-      const isAudio = resource.name.toLowerCase().includes('microphone') || resource.category === 'Audio';
-      
-      let baseScore = 60;
-      if (isCamera) baseScore += 30;
-      if (isTripod) baseScore += 25;
-      if (isAudio && query.toLowerCase().includes('mic')) baseScore += 25;
-      baseScore += (resource.rating * 2);
-      if (resource.condition === 'Excellent') baseScore += 5;
-      
-      return {
-        ...resource,
-        matchScore: Math.min(Math.round(baseScore), 96) // Capped at 96 for realism in demo
-      };
-    })
-    .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+  if (apiError) {
+    return (
+      <div className="container mx-auto px-6 py-24 max-w-4xl text-center">
+        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <h2 className="text-xl font-medium text-black mb-2">Oops! The AI Coordinator is offline.</h2>
+        <p className="text-gray-500 mb-6">Make sure you have added your Gemini API key to the .env.local file.</p>
+        <Button onClick={() => navigate('/')}>Go Back Home</Button>
+      </div>
+    );
+  }
 
-  const bestMatch = matches[0];
-  const alternatives = matches.slice(1);
+  const bestMatch = matchedItems[0];
+  const alternatives = matchedItems.slice(1);
 
   return (
     <div className="container mx-auto px-6 py-12 max-w-5xl">

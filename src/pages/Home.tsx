@@ -24,11 +24,12 @@ const popularSearches = ['Camera', 'Tripod', 'Mic', 'Projector', 'Textbooks', 'L
 export const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategory, setSearchCategory] = useState('All');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/ai-discovery?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`/ai-discovery?q=${encodeURIComponent(searchQuery)}&cat=${encodeURIComponent(searchCategory)}`);
     }
   };
 
@@ -67,10 +68,23 @@ export const Home = () => {
           {/* Search Box */}
           <div className="mb-6">
             <form onSubmit={handleSearch} className="flex w-full bg-background rounded-md shadow-sm overflow-hidden border border-border">
-              <div className="flex items-center pl-5 text-muted-foreground">
-                <Search className="h-5 w-5" />
+              <div className="flex items-center pl-3 border-r border-border bg-muted/30">
+                <select 
+                  className="bg-transparent text-[13px] font-medium outline-none pr-2 py-3 text-muted-foreground cursor-pointer"
+                  value={searchCategory}
+                  onChange={(e) => setSearchCategory(e.target.value)}
+                >
+                  <option value="All">All Categories</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Cameras">Cameras</option>
+                  <option value="Audio">Audio</option>
+                  <option value="Books">Books</option>
+                </select>
               </div>
-              <div className="flex flex-col flex-1 py-3 px-4">
+              <div className="flex items-center pl-4 text-muted-foreground">
+                <Search className="h-4 w-4" />
+              </div>
+              <div className="flex flex-col flex-1 py-3 px-3">
                 <input
                   type="text"
                   placeholder="What do you need?"

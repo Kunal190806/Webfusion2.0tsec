@@ -12,6 +12,8 @@ interface AppState {
 interface AppContextType extends AppState {
   addRequest: (transaction: Omit<Transaction, 'id' | 'status'>) => void;
   updateTransactionStatus: (id: string, status: Transaction['status']) => void;
+  processSettlement: (id: string, damageDeduction: number, isDispute?: boolean) => void;
+  submitRating: (id: string, rating: number) => void;
   addResource: (resource: Omit<Resource, 'id'>) => void;
   resetDemo: () => void;
 }
@@ -26,7 +28,7 @@ const INITIAL_STATE = {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('campusCircularStateV3');
+    const saved = localStorage.getItem('campusCircularStateV4');
     if (saved) {
       return JSON.parse(saved);
     }
@@ -37,7 +39,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   useEffect(() => {
-    localStorage.setItem('campusCircularStateV3', JSON.stringify(state));
+    localStorage.setItem('campusCircularStateV4', JSON.stringify(state));
   }, [state]);
 
   const addRequest = (transactionData: Omit<Transaction, 'id' | 'status'>) => {
@@ -61,6 +63,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
   };
 
+  const processSettlement = (id: string, damageDeduction: number, isDispute: boolean = false) => {
+    setState(prev => ({
+      ...prev,
+      transactions: prev.transactions.map(t => {
+        if (t.id === id) {
+          const totalRefund = t.securityDeposit - damageDeduction;
+          return {
+            ...t,
+            status: isDispute ? 'Disputed' : 'Settlement',
+            damageDeduction,
+            totalRefund: totalRefund > 0 ? totalRefund : 0,
+          } as Transaction;
+        }
+        return t;
+      }),
+    }));
+  };
+
+  const submitRating = (id: string, rating: number) => {
+    setState(prev => ({
+      ...prev,
+      transactions: prev.transactions.map(t => 
+        t.id === id ? { ...t, status: 'Rated' } : t
+      ),
+    }));
+  };
+
   const addResource = (resourceData: Omit<Resource, 'id'>) => {
     const newResource: Resource = {
       ...resourceData,
@@ -77,7 +106,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...INITIAL_STATE,
       currentUser: mockUsers.find(u => u.id === 'u3') || null,
     });
-    localStorage.removeItem('campusCircularState');
+    localStorage.removeItem('campusCircularStateV4');
   };
 
   return (
@@ -85,6 +114,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...state,
       addRequest,
       updateTransactionStatus,
+      processSettlement,
+      submitRating,
       addResource,
       resetDemo
     }}>

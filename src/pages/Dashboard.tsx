@@ -4,10 +4,16 @@ import { Button } from '../components/ui/button';
 import { Plus, Settings } from 'lucide-react';
 import { ProfileCard } from '../components/ui/ProfileCard';
 import { ConfettiButton } from '../components/ui/confetti';
+import { SettlementModal } from '../components/modals/SettlementModal';
+import { RatingModal } from '../components/modals/RatingModal';
+import { AddResourceModal } from '../components/modals/AddResourceModal';
 
 export const Dashboard = () => {
-  const { transactions, resources, users, updateTransactionStatus } = useAppContext();
+  const { transactions, resources, users, updateTransactionStatus, processSettlement, submitRating } = useAppContext();
   const [activeTab, setActiveTab] = useState<'borrowings' | 'listings'>('borrowings');
+  const [selectedTransactionForSettlement, setSelectedTransactionForSettlement] = useState<any>(null);
+  const [selectedTransactionForRating, setSelectedTransactionForRating] = useState<any>(null);
+  const [isAddResourceModalOpen, setIsAddResourceModalOpen] = useState(false);
 
   // Hardcode demo user "u3" for now since auth isn't fully implemented
   const currentUser = users.find(u => u.id === 'u3') || users[0];
@@ -23,7 +29,10 @@ export const Dashboard = () => {
         </div>
         <div className="flex gap-3">
           <Button variant="outline"><Settings className="h-4 w-4 mr-2" /> Settings</Button>
-          <ConfettiButton className="bg-[#16352F] text-white hover:bg-[#0D2621]">
+          <ConfettiButton 
+            className="bg-[#16352F] text-white hover:bg-[#0D2621]"
+            onClick={() => setIsAddResourceModalOpen(true)}
+          >
             <Plus className="h-4 w-4 mr-2" /> List New Resource
           </ConfettiButton>
         </div>
@@ -129,10 +138,10 @@ export const Dashboard = () => {
                               <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => updateTransactionStatus(t.id, 'Returned')}>Return Item</Button>
                             )}
                             {t.status === 'Returned' && (
-                              <Button size="sm" className="h-8 text-xs bg-[#16352F] text-white" onClick={() => updateTransactionStatus(t.id, 'Settlement')}>Inspect & Settle</Button>
+                              <Button size="sm" className="h-8 text-xs bg-[#16352F] text-white" onClick={() => setSelectedTransactionForSettlement({ t, resource })}>Inspect & Settle</Button>
                             )}
                             {t.status === 'Settlement' && (
-                              <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => updateTransactionStatus(t.id, 'Rated')}>Accept Settlement</Button>
+                              <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setSelectedTransactionForRating({ t, resource })}>Review & Accept</Button>
                             )}
                           </div>
                         </div>
@@ -146,13 +155,38 @@ export const Dashboard = () => {
 
           {activeTab === 'listings' && (
             <div className="py-20 text-center border border-border bg-card rounded-xl">
-              <h3 className="font-semibold mb-2">No active listings</h3>
-              <p className="text-muted-foreground text-sm mb-6">List a resource to start sharing.</p>
-              <Button className="bg-[#16352F] text-white">List a Resource</Button>
+              <h3 className="font-semibold mb-2">Manage your listings here</h3>
+              <p className="text-muted-foreground text-sm mb-6">List a new resource to start sharing.</p>
+              <Button className="bg-[#16352F] text-white" onClick={() => setIsAddResourceModalOpen(true)}>List a Resource</Button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Modals */}
+      <AddResourceModal 
+        isOpen={isAddResourceModalOpen} 
+        onClose={() => setIsAddResourceModalOpen(false)} 
+      />
+      {selectedTransactionForSettlement && (
+        <SettlementModal
+          isOpen={true}
+          onClose={() => setSelectedTransactionForSettlement(null)}
+          transaction={selectedTransactionForSettlement.t}
+          resource={selectedTransactionForSettlement.resource}
+          onSettle={processSettlement}
+        />
+      )}
+
+      {selectedTransactionForRating && (
+        <RatingModal
+          isOpen={true}
+          onClose={() => setSelectedTransactionForRating(null)}
+          transaction={selectedTransactionForRating.t}
+          resource={selectedTransactionForRating.resource}
+          onSubmit={submitRating}
+        />
+      )}
     </div>
   );
 };

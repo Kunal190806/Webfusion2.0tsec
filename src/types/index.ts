@@ -39,7 +39,8 @@ export type TransactionStatus =
   | 'Returned'
   | 'Inspection'
   | 'Settlement'
-  | 'Rated';
+  | 'Rated'
+  | 'Disputed';
 
 export interface Transaction {
   id: string;
