@@ -85,21 +85,12 @@ export const Login = () => {
       </div>
       
       {/* Right Illustration Side */}
-      <div className="hidden lg:flex flex-1 p-6 relative">
-        <div className="w-full h-full rounded-[2rem] bg-[#0F8A54] relative overflow-hidden flex items-center justify-center p-12">
-           {/* Illustration Image */}
-           <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-             <img 
-                src="/Loginpage.jpg" 
-                alt="Login Illustration" 
-                className="max-w-full max-h-full object-contain"
-             />
-           </div>
-           
-           {/* Decorative corner cutouts as in the design */}
-           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-12 bg-white rounded-b-3xl"></div>
-           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-12 bg-white rounded-t-3xl"></div>
-        </div>
+      <div className="hidden lg:block flex-1 relative h-screen">
+        <img 
+          src="/Loginpage.jpg" 
+          alt="Login Illustration" 
+          className="w-full h-full object-cover"
+        />
       </div>
       
     </div>
