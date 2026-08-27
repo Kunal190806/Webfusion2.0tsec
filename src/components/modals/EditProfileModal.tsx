@@ -16,6 +16,17 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
   const [name, setName] = useState(user?.name || '');
   const [avatar, setAvatar] = useState(user?.avatar || '');
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   if (!isOpen || !user) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -47,14 +58,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold">Avatar URL (Optional)</label>
-            <input 
-              type="text" 
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg outline-none focus:border-primary"
-              placeholder="https://..."
-            />
+            <label className="text-sm font-semibold">Avatar Image</label>
+            <div className="flex items-center gap-4">
+              {avatar && (
+                <img src={avatar} alt="Avatar preview" className="w-12 h-12 rounded-full object-cover border border-border shrink-0" />
+              )}
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"
+              />
+            </div>
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
