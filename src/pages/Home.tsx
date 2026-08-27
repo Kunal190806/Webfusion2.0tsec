@@ -26,50 +26,7 @@ function DotIcon({ color = BLACK, size = 8, style = {} }: { color?: string; size
   );
 }
 
-// ─── Hero illustration ───────────────────────────────────────────────────────
-function HeroIllustration() {
-  return (
-    <svg viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg mx-auto">
-      <ellipse cx="240" cy="210" rx="200" ry="185" fill={GREEN} stroke={BLACK} strokeWidth="3" />
-      <g>
-        <rect x="20" y="240" width="90" height="50" rx="12" fill={CORAL} stroke={BLACK} strokeWidth="3" />
-        <ellipse cx="100" cy="255" rx="28" ry="22" fill="#C8864E" stroke={BLACK} strokeWidth="3" />
-        <rect x="96" y="232" width="14" height="30" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="112" y="235" width="14" height="27" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="80" y="235" width="14" height="26" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="64" y="240" width="14" height="22" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
-      </g>
-      <g>
-        <rect x="152" y="170" width="176" height="120" rx="16" fill={OFFWHITE} stroke={BLACK} strokeWidth="4" />
-        <circle cx="240" cy="230" r="38" fill={BLACK} stroke={BLACK} strokeWidth="3" />
-        <circle cx="240" cy="230" r="28" fill="#334" />
-        <circle cx="240" cy="230" r="18" fill="#556" />
-        <circle cx="240" cy="230" r="8" fill="#778" />
-        <circle cx="228" cy="218" r="5" fill="white" opacity="0.6" />
-        <rect x="272" y="178" width="44" height="28" rx="6" fill="#e0dcd0" stroke={BLACK} strokeWidth="3" />
-        <circle cx="185" cy="174" r="12" fill={CORAL} stroke={BLACK} strokeWidth="3" />
-        <rect x="160" y="180" width="28" height="16" rx="5" fill={YELLOW} stroke={BLACK} strokeWidth="2.5" />
-        <rect x="152" y="195" width="10" height="18" rx="5" fill="#aaa" stroke={BLACK} strokeWidth="2" />
-        <rect x="318" y="195" width="10" height="18" rx="5" fill="#aaa" stroke={BLACK} strokeWidth="2" />
-      </g>
-      <g>
-        <rect x="370" y="240" width="90" height="50" rx="12" fill="#4B6EFF" stroke={BLACK} strokeWidth="3" />
-        <ellipse cx="380" cy="255" rx="28" ry="22" fill="#8B5E3C" stroke={BLACK} strokeWidth="3" />
-        <rect x="370" y="232" width="14" height="30" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="356" y="235" width="14" height="27" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="384" y="235" width="14" height="26" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
-        <rect x="398" y="240" width="14" height="22" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
-      </g>
-      <circle cx="155" cy="155" r="7" fill={YELLOW} stroke={BLACK} strokeWidth="2.5" />
-      <circle cx="325" cy="148" r="5" fill={CORAL} stroke={BLACK} strokeWidth="2" />
-      <circle cx="100" cy="200" r="5" fill={YELLOW} stroke={BLACK} strokeWidth="2" />
-      <circle cx="385" cy="185" r="7" fill={GREEN} stroke={BLACK} strokeWidth="2.5" />
-      <line x1="128" y1="215" x2="148" y2="215" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
-      <line x1="122" y1="228" x2="146" y2="228" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
-      <line x1="128" y1="241" x2="148" y2="241" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}
+// ─── Hero illustration removed as per user request ─────────────────────────
 
 // ─── Step icons ──────────────────────────────────────────────────────────────
 function StepIconSearch() {
@@ -305,18 +262,14 @@ export const Home = () => {
               </p>
             </div>
           </div>
-          <div className="relative flex justify-center">
-            <div className="float-anim"><HeroIllustration /></div>
-            {[
-              { label: "📸 Camera", top: "5%", right: "0%", bg: CORAL },
-              { label: "📚 Textbook", top: "75%", right: "5%", bg: YELLOW },
-              { label: "🎸 Guitar", top: "80%", left: "0%", bg: GREEN },
-            ].map(tag => (
-              <div key={tag.label} className="absolute px-3 py-1.5 rounded-xl font-bold text-xs whitespace-nowrap"
-                style={{ background: tag.bg, border: `2px solid ${BLACK}`, boxShadow: `2px 2px 0 ${BLACK}`, top: tag.top, right: (tag as any).right, left: (tag as any).left }}>
-                {tag.label}
-              </div>
-            ))}
+          <div className="relative flex justify-center items-center">
+            <div className="w-full max-w-md rounded-[2rem] overflow-hidden border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(26,26,26,1)] float-anim">
+              <img 
+                src="/Loginpage.jpg" 
+                alt="Campus Circular Sharing" 
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
