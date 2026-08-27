@@ -53,10 +53,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
 
     const unsubResources = onSnapshot(collection(db, 'resources'), (snap) => {
-      if (snap.empty) {
-        // Auto seed
-        mockResources.forEach(r => setDoc(doc(db, 'resources', r.id), r));
-      } else {
+      // Always re-seed resources so images/data stays up to date
+      // This ensures new items added to mockData always appear
+      const existingIds = new Set(snap.docs.map(d => d.id));
+      const mockIds = new Set(mockResources.map(r => r.id));
+      
+      // Add or update any resource that's in mockData (upsert)
+      mockResources.forEach(r => {
+        setDoc(doc(db, 'resources', r.id), r);
+      });
+      
+      // Use all docs from Firebase (will reflect mock updates after next snapshot)
+      if (!snap.empty) {
         setState(prev => ({ ...prev, resources: snap.docs.map(d => d.data() as Resource) }));
       }
     });

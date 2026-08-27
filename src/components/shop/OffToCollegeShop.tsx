@@ -15,11 +15,11 @@ const heroTiles = [
 const categoryPills = ['All', 'Cameras', 'Accessories', 'Electronics', 'Books'];
 
 const trendCarousel = [
-  { name: 'Photography Shoot' },
-  { name: 'Finals Week' },
-  { name: 'Engineering Project' },
-  { name: 'Campus Event' },
-  { name: 'Study Lounge' },
+  { name: 'Photography Shoot', img: '/Store-items/camera/camera-1.jpg' },
+  { name: 'Finals Week', img: '/Store-items/textbooks/textbook-2.jpg' },
+  { name: 'Engineering Project', img: '/Store-items/calculator/calculator-3.jpg' },
+  { name: 'Campus Event', img: '/Store-items/tripods/tripod-1.jpg' },
+  { name: 'Study Lounge', img: '/Store-items/notes/handwrtten-notes-2.jpg' },
 ];
 
 const sidebarFilters = [
@@ -45,11 +45,7 @@ export const OffToCollegeShop = () => {
   // Filter logic based on our real categories
   const filteredResources = resources.filter(r => {
     if (selectedFilter === 'All') return true;
-    if (selectedFilter === 'Cameras') return r.category === 'Cameras';
-    if (selectedFilter === 'Accessories') return r.category === 'Accessories';
-    if (selectedFilter === 'Electronics') return r.category === 'Electronics';
-    if (selectedFilter === 'Books') return r.category === 'Books';
-    return true;
+    return r.category === selectedFilter;
   });
 
   return (
@@ -121,18 +117,20 @@ export const OffToCollegeShop = () => {
           <h3 className="text-[18px] font-bold text-black mb-4">Trending on campus</h3>
           <div className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
             {trendCarousel.map((item, i) => (
-              <div key={i} className="flex flex-col gap-3 flex-shrink-0 w-[180px]">
-                <div 
-                  className="w-full h-[220px] rounded-xl relative overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: '#D7F24A' }}
-                >
-                  <div className="absolute top-0 right-0 w-[150%] h-8 bg-white/40 -rotate-45 translate-x-1/4 -translate-y-1/2"></div>
-                </div>
-                <div className="font-medium text-black text-sm">
-                  {item.name}
+            <div key={i} className="flex flex-col gap-3 flex-shrink-0 w-[180px]">
+              <div 
+                className="w-full h-[220px] rounded-xl relative overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+              >
+                <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 h-11 bg-black/50 flex items-center justify-center">
+                  <span className="font-bold text-white text-xs text-center px-2">{item.name}</span>
                 </div>
               </div>
-            ))}
+              <div className="font-medium text-black text-sm">
+                {item.name}
+              </div>
+            </div>
+          ))}
           </div>
         </section>
 
