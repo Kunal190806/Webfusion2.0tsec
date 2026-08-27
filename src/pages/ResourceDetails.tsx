@@ -66,8 +66,8 @@ function ProductGallery({ images, name }: { images: string[]; name: string }) {
   const thumbs = images.length > 0 ? images : ['/Store-items/camera/camera-1.jpg'];
 
   return (
-    <div className="flex gap-3 h-full">
-      <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col-reverse md:flex-row gap-3 h-full">
+      <div className="flex flex-row md:flex-col gap-2 overflow-x-auto items-center pb-2 md:pb-0 scrollbar-hide">
         {thumbs.map((src, i) => (
           <button key={i} onClick={() => setActive(i)}
             className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${active === i ? "border-[#2EE887]" : "border-[#ECE4D6] hover:border-[#2EE887]/50"}`}>
@@ -396,12 +396,14 @@ export const ResourceDetails = () => {
           </div>
 
           {/* Tabs */}
-          <ProductTabs resource={resource} ownerName={owner?.name || 'Unknown'} reviews={reviews} />
+          <div className="w-full overflow-hidden">
+             <ProductTabs resource={resource} ownerName={owner?.name || 'Unknown'} reviews={reviews} />
+          </div>
         </section>
 
         {/* ── TRUST BANNER ── */}
         <section className="max-w-5xl mx-auto px-6 mb-12">
-          <div className="bg-[#FF5533] rounded-2xl flex items-center gap-6 px-8 py-7 overflow-hidden">
+          <div className="bg-[#FF5533] rounded-2xl flex flex-col md:flex-row items-center gap-6 px-8 py-7 overflow-hidden">
             <div className="flex-1 flex flex-col gap-3">
               <h2 className="font-serif italic text-white text-[1.9rem] font-bold leading-tight">Student Verified</h2>
               <p className="text-white/90 text-sm leading-relaxed max-w-[300px]">
@@ -441,7 +443,7 @@ export const ResourceDetails = () => {
       {/* ── FOOTER ── */}
       <footer className="bg-[#1A1A1A] text-white">
         <div className="max-w-5xl mx-auto px-6 pt-10 pb-8">
-          <div className="grid grid-cols-1 md:grid-cols-[auto_repeat(3,1fr)_1.6fr] gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[auto_repeat(3,1fr)_1.6fr] gap-8 items-start">
             <div className="pr-4">
               <h2 className="font-serif italic text-4xl font-bold leading-none text-[#2EE887]">
                 Campus<br /><span className="text-[#FF5533]">Circular</span>

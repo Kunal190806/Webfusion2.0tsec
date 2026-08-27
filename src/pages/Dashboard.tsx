@@ -104,7 +104,8 @@ export const Dashboard = () => {
                   <p className="text-muted-foreground text-sm">Your next borrowing will appear here.</p>
                 </div>
               ) : (
-                <div className="border border-border rounded-xl bg-card overflow-hidden shadow-sm">
+                <div className="border border-border rounded-xl bg-card overflow-x-auto shadow-sm">
+                  <div className="min-w-[700px]">
                   {/* Table Header */}
                   <div className="grid grid-cols-6 gap-4 p-4 border-b border-border bg-[#F4F3EF] text-xs font-bold tracking-widest text-muted-foreground uppercase">
                     <div className="col-span-2">Resource</div>
@@ -170,6 +171,7 @@ export const Dashboard = () => {
                         </div>
                       );
                     })}
+                  </div>
                   </div>
                 </div>
               )}

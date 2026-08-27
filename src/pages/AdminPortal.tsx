@@ -119,16 +119,16 @@ export const AdminPortal = () => {
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
   return (
-    <div className="min-h-screen bg-[#F7F2E8] font-sans text-black p-4 flex gap-6">
+    <div className="min-h-screen bg-[#F7F2E8] font-sans text-black p-4 flex flex-col lg:flex-row gap-6">
       
-      {/* LEFT SIDEBAR */}
-      <aside className="w-64 bg-[#1A1A1A] text-white rounded-[2rem] p-6 flex flex-col relative shrink-0">
+      {/* ── LEFT SIDEBAR ── */}
+      <aside className="w-full lg:w-64 bg-[#1A1A1A] text-white rounded-[2rem] p-6 flex flex-col relative shrink-0">
         <div className="flex items-center gap-2 mb-10 mt-2">
           <div className="font-serif text-2xl font-bold tracking-tight">Campus<br/>Circular</div>
         </div>
 
         <div className="text-xs text-gray-500 font-medium mb-4 tracking-wider">General</div>
-        <nav className="flex flex-col gap-2 mb-8">
+        <nav className="flex lg:flex-col gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
           {[
             { icon: <LayoutDashboard className="w-4 h-4" />, label: 'Dashboard' },
             { icon: <Users className="w-4 h-4" />, label: 'Members' },
@@ -150,7 +150,7 @@ export const AdminPortal = () => {
         </nav>
 
         <div className="text-xs text-gray-500 font-medium mb-4 tracking-wider">Tools</div>
-        <nav className="flex flex-col gap-2 mb-auto">
+        <nav className="flex lg:flex-col gap-2 mb-auto overflow-x-auto pb-2 scrollbar-hide">
           <NavItem icon={<CreditCard className="w-4 h-4" />} label="Billing" active={activeSection === 'Billing'} onClick={() => { setActiveSection('Billing'); setActiveFilter('Billing'); }} />
           <NavItem icon={<Settings className="w-4 h-4" />} label="Settings" active={activeSection === 'Settings'} onClick={() => { setActiveSection('Settings'); setActiveFilter('Settings'); }} />
         </nav>
@@ -194,7 +194,7 @@ export const AdminPortal = () => {
         </div>
 
         {/* ── STATS CARDS ── */}
-        <div className="grid grid-cols-[1fr_1.5fr] gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-4 mb-6">
           
           {/* Yellow: Users */}
           <div className="bg-[#FFD166] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
@@ -256,7 +256,7 @@ export const AdminPortal = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_1fr] gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-4 mb-8">
           {/* Green: Categories from real data */}
           <div className="bg-[#2EE887] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#92A367] rounded-bl-[100px] -z-0"></div>
@@ -292,7 +292,7 @@ export const AdminPortal = () => {
         </div>
 
         {/* ── REAL DATA TABLE ── */}
-        <div className="grid grid-cols-[1.2fr_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
           
           {/* Left: Real filtered list */}
           <div>
@@ -453,8 +453,8 @@ export const AdminPortal = () => {
         </div>
       </main>
 
-      {/* RIGHT SIDEBAR */}
-      <aside className="w-72 flex flex-col shrink-0">
+      {/* ── RIGHT CALENDAR SIDEBAR ── */}
+      <aside className="w-full lg:w-80 shrink-0 flex flex-col gap-6">
         {/* Calendar Header */}
         <div className="flex justify-end gap-2 mb-8">
           <div className="px-4 py-1.5 bg-[#FF5533] rounded-full text-xs font-bold">{month}</div>

@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAppContext } from '../store/AppContext';
-import { Bell } from 'lucide-react';
+import { Bell, Menu, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
 export const Layout = () => {
   const { currentUser } = useAppContext();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { name: 'Discover', path: '/discover' },
+    { name: 'Borrowings', path: '/dashboard?tab=borrowings' },
+    { name: 'Listings', path: '/dashboard?tab=listings' },
+    { name: 'Requests', path: '/dashboard?tab=requests' },
+    { name: 'Impact', path: '/impact' },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans">
@@ -27,16 +36,14 @@ export const Layout = () => {
           
           {/* Centered Nav */}
           <nav className="hidden md:flex items-center gap-10">
-            <Link to="/discover" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Discover</Link>
-            <Link to="/dashboard?tab=borrowings" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Borrowings</Link>
-            <Link to="/dashboard?tab=listings" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Listings</Link>
-            <Link to="/dashboard?tab=requests" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Requests</Link>
-            <Link to="/impact" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Impact</Link>
+            {navLinks.map(link => (
+              <Link key={link.name} to={link.path} className="text-sm font-semibold text-foreground hover:text-primary transition-colors">{link.name}</Link>
+            ))}
             <Link to="/admin" className="text-sm font-bold text-red-500 hover:text-red-700 transition-colors bg-red-50 px-2 py-1 rounded">Admin</Link>
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             <button className="text-foreground hover:text-primary transition-colors">
               <Bell className="h-5 w-5" />
             </button>
@@ -46,17 +53,56 @@ export const Layout = () => {
               </div>
               <span className="text-sm font-semibold">Trust Score</span>
             </div>
-            <Link to="/login">
-              <Button variant="outline" className="hidden md:flex h-10 px-4 rounded-md font-semibold">
+            <Link to="/login" className="hidden md:block">
+              <Button variant="outline" className="h-10 px-4 rounded-md font-semibold">
                 Login
               </Button>
             </Link>
             <Button className="hidden md:flex h-10 px-6 rounded-md font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
               + List Resource
             </Button>
+            
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="md:hidden text-foreground p-1" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </header>
+      
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden sticky top-20 z-40 bg-background border-b border-border shadow-lg w-full flex flex-col p-4 animate-in slide-in-from-top-2">
+          {navLinks.map(link => (
+            <Link 
+              key={link.name} 
+              to={link.path} 
+              className="text-lg font-semibold py-3 border-b border-border/50 text-foreground hover:text-primary"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <Link 
+            to="/admin" 
+            className="text-lg font-bold py-3 border-b border-border/50 text-red-500 hover:text-red-700"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Admin Panel
+          </Link>
+          <div className="flex flex-col gap-3 mt-4">
+            <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="outline" className="w-full h-12 font-semibold">Login</Button>
+            </Link>
+            <Button className="w-full h-12 font-semibold bg-primary text-primary-foreground">
+              + List Resource
+            </Button>
+          </div>
+        </div>
+      )}
       
       <main className="flex-1 flex flex-col">
         <Outlet />
