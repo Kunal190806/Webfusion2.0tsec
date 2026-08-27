@@ -16,6 +16,17 @@ export const AdminPortal = () => {
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
   const [activeSection, setActiveSection] = useState('Dashboard');
 
+  // ── ALWAYS-VISIBLE mock transactions (supplementary) ──
+  const mockTxRows: Transaction[] = [
+    { id: 'mt1', resourceId: 'camera-1', borrowerId: 'd1', ownerId: 'd4', startDate: new Date(Date.now() - 86400000 * 2).toISOString(), endDate: new Date(Date.now() + 86400000).toISOString(), status: 'Borrowed', borrowingCharge: 520, platformFee: 15, securityDeposit: 2000, lateFee: 0, damageDeduction: 0, totalRefund: 2000, message: 'Need camera for film project.' },
+    { id: 'mt2', resourceId: 'tripod-1', borrowerId: 'd2', ownerId: 'd1', startDate: new Date(Date.now() - 86400000 * 5).toISOString(), endDate: new Date(Date.now() - 86400000 * 2).toISOString(), status: 'Rated', borrowingCharge: 270, platformFee: 15, securityDeposit: 600, lateFee: 0, damageDeduction: 0, totalRefund: 600, message: 'Event shoot on rooftop.' },
+    { id: 'mt3', resourceId: 'calc-1', borrowerId: 'd3', ownerId: 'd4', startDate: new Date(Date.now() - 86400000).toISOString(), endDate: new Date(Date.now() + 86400000 * 2).toISOString(), status: 'Accepted', borrowingCharge: 90, platformFee: 15, securityDeposit: 250, lateFee: 0, damageDeduction: 0, totalRefund: 250 },
+    { id: 'mt4', resourceId: 'book-1', borrowerId: 'd1', ownerId: 'd2', startDate: new Date(Date.now() - 86400000 * 7).toISOString(), endDate: new Date(Date.now() - 86400000 * 5).toISOString(), status: 'Disputed', borrowingCharge: 40, platformFee: 15, securityDeposit: 200, lateFee: 0, damageDeduction: 0, totalRefund: 0, message: 'Pages found torn on return.' },
+    { id: 'mt5', resourceId: 'camera-3', borrowerId: 'd4', ownerId: 'd2', startDate: new Date(Date.now() - 86400000 * 1).toISOString(), endDate: new Date(Date.now() + 86400000 * 3).toISOString(), status: 'Requested', borrowingCharge: 720, platformFee: 15, securityDeposit: 1800, lateFee: 0, damageDeduction: 0, totalRefund: 1800, message: 'Reel for club fest.' },
+    { id: 'mt6', resourceId: 'notes-2', borrowerId: 'd2', ownerId: 'd3', startDate: new Date(Date.now() - 86400000 * 10).toISOString(), endDate: new Date(Date.now() - 86400000 * 9).toISOString(), status: 'Rated', borrowingCharge: 5, platformFee: 15, securityDeposit: 30, lateFee: 0, damageDeduction: 0, totalRefund: 30 },
+  ];
+  const allTx = [...transactions, ...mockTxRows];
+
   // ── REAL STATS from Firebase data ──
   const totalUsers = users.length;
   const totalResources = resources.length;
@@ -48,7 +59,7 @@ export const AdminPortal = () => {
     ? (users.reduce((sum, u) => sum + u.rating, 0) / users.length).toFixed(1)
     : '4.8';
 
-  // ── SUPPLEMENTARY demo rows so filters always look populated ──
+  // ── SUPPLEMENTARY demo users / resources ──
   const demoUsers: User[] = users.length < 5 ? [
     { id: 'd1', name: 'Priya Sharma', trustScore: 94, isVerified: true, successfulExchanges: 18, onTimeReturns: 97, rating: 4.9, disputes: 0 },
     { id: 'd2', name: 'Rohan Mehta', trustScore: 88, isVerified: true, successfulExchanges: 9, onTimeReturns: 91, rating: 4.5, disputes: 1 },
@@ -60,17 +71,17 @@ export const AdminPortal = () => {
   const demoResources: Resource[] = resources.length < 5 ? [
     { id: 'dr1', ownerId: 'd4', name: 'Nikon DSLR D3500', description: 'Entry-level DSLR', category: 'Cameras', condition: 'Good' as const, images: [], borrowingCharge: 300, securityDeposit: 2000, isAvailable: true, availabilityDate: new Date().toISOString(), distance: 0.5, rating: 4.7, includedAccessories: ['Kit Lens'], borrowingRules: 'Handle with care', location: 'Hostel Block A' },
     { id: 'dr2', ownerId: 'd1', name: 'Mechanical Keyboard', description: 'Cherry MX Brown', category: 'Electronics', condition: 'Excellent' as const, images: [], borrowingCharge: 50, securityDeposit: 500, isAvailable: false, availabilityDate: new Date().toISOString(), distance: 1.2, rating: 4.4, includedAccessories: [], borrowingRules: 'No food near', location: 'CS Lab' },
-    { id: 'dr3', ownerId: 'd2', name: 'Organic Chemistry – Morrison Boyd', description: 'Classic chemistry text', category: 'Books', condition: 'Fair' as const, images: [], borrowingCharge: 20, securityDeposit: 100, isAvailable: true, availabilityDate: new Date().toISOString(), distance: 0.3, rating: 4.1, includedAccessories: [], borrowingRules: 'No highlights', location: 'Library' },
   ] : [];
   const allResources = [...resources, ...demoResources];
 
-  const demoDisputes: Transaction[] = transactions.filter(t => t.status === 'Disputed').length < 2 ? [
+  const demoDisputes: Transaction[] = allTx.filter(t => t.status === 'Disputed').length < 2 ? [
     { id: 'dd1', resourceId: 'camera-1', borrowerId: 'd2', ownerId: 'd4', startDate: new Date(Date.now() - 86400000 * 3).toISOString(), endDate: new Date(Date.now() - 86400000).toISOString(), status: 'Disputed', borrowingCharge: 750, platformFee: 75, securityDeposit: 1000, lateFee: 0, damageDeduction: 0, totalRefund: 0, message: 'Lens scratch found on return.' },
-    { id: 'dd2', resourceId: 'tripod-1', borrowerId: 'd3', ownerId: 'd1', startDate: new Date(Date.now() - 86400000 * 5).toISOString(), endDate: new Date(Date.now() - 86400000 * 2).toISOString(), status: 'Disputed', borrowingCharge: 160, platformFee: 16, securityDeposit: 500, lateFee: 100, damageDeduction: 0, totalRefund: 0, message: 'Item returned 2 days late.' },
   ] : [];
 
-  // ── REAL FILTERED LIST ──
-  const filteredTransactions = transactions.filter(t => {
+  const allDisputes = [...allTx.filter(t => t.status === 'Disputed'), ...demoDisputes];
+
+  // ── FILTERED LISTS ──
+  const filteredTransactions = allTx.filter(t => {
     if (!searchQuery) return true;
     const resource = allResources.find(r => r.id === t.resourceId);
     const borrower = allUsers.find(u => u.id === t.borrowerId);
@@ -85,8 +96,6 @@ export const AdminPortal = () => {
   const filteredResources = allResources.filter(r =>
     !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()) || r.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const allDisputes = [...transactions.filter(t => t.status === 'Disputed'), ...demoDisputes];
 
   // ── TIMELINE from real data ──
   const timelineEvents = [
@@ -142,8 +151,8 @@ export const AdminPortal = () => {
 
         <div className="text-xs text-gray-500 font-medium mb-4 tracking-wider">Tools</div>
         <nav className="flex flex-col gap-2 mb-auto">
-          <NavItem icon={<CreditCard className="w-4 h-4" />} label="Billing" onClick={() => {}} />
-          <NavItem icon={<Settings className="w-4 h-4" />} label="Settings" onClick={() => navigate('/')} />
+          <NavItem icon={<CreditCard className="w-4 h-4" />} label="Billing" active={activeSection === 'Billing'} onClick={() => { setActiveSection('Billing'); setActiveFilter('Billing'); }} />
+          <NavItem icon={<Settings className="w-4 h-4" />} label="Settings" active={activeSection === 'Settings'} onClick={() => { setActiveSection('Settings'); setActiveFilter('Settings'); }} />
         </nav>
 
         <button onClick={() => navigate('/')} className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors mt-8">
@@ -356,15 +365,89 @@ export const AdminPortal = () => {
             </div>
           </div>
 
-          {/* Right: Transaction Details */}
+          {/* Right: Transaction Details / Billing / Settings */}
           <div>
-            <h3 className="font-bold text-lg mb-4 px-2">Details</h3>
-            {selectedTx ? (
-              <TxDetailPanel tx={selectedTx} resources={resources} users={users} updateTransactionStatus={updateTransactionStatus} />
-            ) : (
-              <div className="bg-[#F5F2EB] rounded-3xl p-6 h-[calc(100%-2.5rem)] flex items-center justify-center text-gray-400 text-sm text-center">
-                Click on a transaction<br/>to view its details
+            {activeFilter === 'Billing' ? (
+              <div className="space-y-4">
+                <h3 className="font-bold text-lg mb-4 px-2">Billing Overview</h3>
+                {/* Revenue summary cards */}
+                <div className="bg-[#F4D068] rounded-2xl p-5">
+                  <div className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1">Total Platform Revenue</div>
+                  <div className="text-3xl font-black">₹{(allTx.filter(t => t.status === 'Rated').reduce((s, t) => s + t.platformFee, 0) + 1245).toLocaleString('en-IN')}</div>
+                  <div className="text-xs text-black/60 mt-1">across {allTx.length} transactions</div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-[#F6A8D0] rounded-2xl p-4">
+                    <div className="text-[10px] font-bold text-black/50 uppercase tracking-wider mb-1">Completed</div>
+                    <div className="text-2xl font-black">{allTx.filter(t => t.status === 'Rated').length}</div>
+                    <div className="text-xs text-black/50">transactions</div>
+                  </div>
+                  <div className="bg-[#9EB070] rounded-2xl p-4">
+                    <div className="text-[10px] font-bold text-black/50 uppercase tracking-wider mb-1">Deposits held</div>
+                    <div className="text-2xl font-black">₹{allTx.filter(t => ['Borrowed','Accepted','Handover'].includes(t.status)).reduce((s, t) => s + t.securityDeposit, 0).toLocaleString('en-IN')}</div>
+                    <div className="text-xs text-black/50">in escrow</div>
+                  </div>
+                </div>
+                <div className="bg-[#F5F2EB] rounded-2xl p-4 border border-gray-200">
+                  <div className="text-xs font-bold text-black/50 uppercase tracking-wider mb-3">Recent payouts</div>
+                  {[
+                    { name: 'Priya Sharma', amount: 255, date: '2 days ago', status: 'Paid' },
+                    { name: 'Karan Patel', amount: 685, date: '4 days ago', status: 'Paid' },
+                    { name: 'Rohan Mehta', amount: 120, date: '1 week ago', status: 'Paid' },
+                  ].map((p, i) => (
+                    <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                      <div>
+                        <div className="text-sm font-semibold">{p.name}</div>
+                        <div className="text-[10px] text-gray-400">{p.date}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold">₹{p.amount}</div>
+                        <div className="text-[10px] text-green-600 font-semibold">{p.status}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+            ) : activeFilter === 'Settings' ? (
+              <div className="space-y-4">
+                <h3 className="font-bold text-lg mb-4 px-2">Platform Settings</h3>
+                {[
+                  { label: 'Platform fee per transaction', value: '₹15', editable: true },
+                  { label: 'Max borrow duration (days)', value: '14', editable: true },
+                  { label: 'Late fee (per day)', value: '₹50', editable: true },
+                  { label: 'Min trust score to list', value: '60', editable: true },
+                ].map((s, i) => (
+                  <div key={i} className="bg-[#F5F2EB] rounded-2xl p-4 border border-gray-200 flex items-center justify-between">
+                    <div className="text-sm font-medium text-gray-700">{s.label}</div>
+                    <div className="bg-white border border-gray-300 rounded-lg px-3 py-1 text-sm font-bold min-w-[64px] text-center">{s.value}</div>
+                  </div>
+                ))}
+                <div className="bg-[#F5F2EB] rounded-2xl p-4 border border-gray-200">
+                  <div className="text-sm font-bold mb-3">Notification settings</div>
+                  {['New transaction alerts', 'Dispute notifications', 'Daily digest email', 'New user sign-ups'].map((n, i) => (
+                    <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                      <span className="text-sm text-gray-600">{n}</span>
+                      <div className={`w-9 h-5 rounded-full ${i < 3 ? 'bg-black' : 'bg-gray-200'} relative cursor-pointer transition-colors`}>
+                        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${i < 3 ? 'right-0.5' : 'left-0.5'}`}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full bg-black text-white rounded-2xl py-3 font-bold text-sm hover:bg-gray-800 transition-colors">
+                  Save changes
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="font-bold text-lg mb-4 px-2">Details</h3>
+                {selectedTx ? (
+                  <TxDetailPanel tx={selectedTx} resources={allResources} users={allUsers} updateTransactionStatus={updateTransactionStatus} />
+                ) : (
+                  <div className="bg-[#F5F2EB] rounded-3xl p-6 h-[calc(100%-2.5rem)] flex items-center justify-center text-gray-400 text-sm text-center">
+                    Click on a transaction<br/>to view its details
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
