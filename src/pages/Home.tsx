@@ -1,337 +1,516 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ArrowRight, Camera, Monitor, Speaker, Activity, MonitorPlay, BookOpen, Calendar, Wrench, Send, Handshake, RotateCcw, Star, Clock } from 'lucide-react';
-import { Button } from '../components/ui/button';
 
-import { ScrollExpand } from '../components/ui/ScrollExpand';
-import { PixelTransition } from '../components/ui/PixelTransition';
-import { TypingAnimation } from '../components/ui/typing-animation';
-import { MorphingText } from '../components/ui/morphing-text';
+// ─── Palette constants ───────────────────────────────────────────────────────
+const GREEN = "#2EE887";
+const CORAL = "#FF5533";
+const YELLOW = "#FFD166";
+const BLACK = "#1A1A1A";
+const OFFWHITE = "#F7F2E8";
 
-const categories = [
-  { name: 'Electronics', icon: Monitor },
-  { name: 'Cameras', icon: Camera },
-  { name: 'Audio', icon: Speaker },
-  { name: 'Sports', icon: Activity },
-  { name: 'Lab Equip.', icon: MonitorPlay },
-  { name: 'Books', icon: BookOpen },
-  { name: 'Events', icon: Calendar },
-  { name: 'Tools', icon: Wrench },
+// ─── Decorative accents ──────────────────────────────────────────────────────
+function PlusIcon({ color = BLACK, size = 16, style = {} }: { color?: string; size?: number; style?: React.CSSProperties }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" style={style}>
+      <rect x="6" y="0" width="4" height="16" fill={color} />
+      <rect x="0" y="6" width="16" height="4" fill={color} />
+    </svg>
+  );
+}
+
+function DotIcon({ color = BLACK, size = 8, style = {} }: { color?: string; size?: number; style?: React.CSSProperties }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 8 8" fill="none" style={style}>
+      <circle cx="4" cy="4" r="4" fill={color} />
+    </svg>
+  );
+}
+
+// ─── Hero illustration ───────────────────────────────────────────────────────
+function HeroIllustration() {
+  return (
+    <svg viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg mx-auto">
+      <ellipse cx="240" cy="210" rx="200" ry="185" fill={GREEN} stroke={BLACK} strokeWidth="3" />
+      <g>
+        <rect x="20" y="240" width="90" height="50" rx="12" fill={CORAL} stroke={BLACK} strokeWidth="3" />
+        <ellipse cx="100" cy="255" rx="28" ry="22" fill="#C8864E" stroke={BLACK} strokeWidth="3" />
+        <rect x="96" y="232" width="14" height="30" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="112" y="235" width="14" height="27" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="80" y="235" width="14" height="26" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="64" y="240" width="14" height="22" rx="7" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
+      </g>
+      <g>
+        <rect x="152" y="170" width="176" height="120" rx="16" fill={OFFWHITE} stroke={BLACK} strokeWidth="4" />
+        <circle cx="240" cy="230" r="38" fill={BLACK} stroke={BLACK} strokeWidth="3" />
+        <circle cx="240" cy="230" r="28" fill="#334" />
+        <circle cx="240" cy="230" r="18" fill="#556" />
+        <circle cx="240" cy="230" r="8" fill="#778" />
+        <circle cx="228" cy="218" r="5" fill="white" opacity="0.6" />
+        <rect x="272" y="178" width="44" height="28" rx="6" fill="#e0dcd0" stroke={BLACK} strokeWidth="3" />
+        <circle cx="185" cy="174" r="12" fill={CORAL} stroke={BLACK} strokeWidth="3" />
+        <rect x="160" y="180" width="28" height="16" rx="5" fill={YELLOW} stroke={BLACK} strokeWidth="2.5" />
+        <rect x="152" y="195" width="10" height="18" rx="5" fill="#aaa" stroke={BLACK} strokeWidth="2" />
+        <rect x="318" y="195" width="10" height="18" rx="5" fill="#aaa" stroke={BLACK} strokeWidth="2" />
+      </g>
+      <g>
+        <rect x="370" y="240" width="90" height="50" rx="12" fill="#4B6EFF" stroke={BLACK} strokeWidth="3" />
+        <ellipse cx="380" cy="255" rx="28" ry="22" fill="#8B5E3C" stroke={BLACK} strokeWidth="3" />
+        <rect x="370" y="232" width="14" height="30" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="356" y="235" width="14" height="27" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="384" y="235" width="14" height="26" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
+        <rect x="398" y="240" width="14" height="22" rx="7" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
+      </g>
+      <circle cx="155" cy="155" r="7" fill={YELLOW} stroke={BLACK} strokeWidth="2.5" />
+      <circle cx="325" cy="148" r="5" fill={CORAL} stroke={BLACK} strokeWidth="2" />
+      <circle cx="100" cy="200" r="5" fill={YELLOW} stroke={BLACK} strokeWidth="2" />
+      <circle cx="385" cy="185" r="7" fill={GREEN} stroke={BLACK} strokeWidth="2.5" />
+      <line x1="128" y1="215" x2="148" y2="215" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
+      <line x1="122" y1="228" x2="146" y2="228" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
+      <line x1="128" y1="241" x2="148" y2="241" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ─── Step icons ──────────────────────────────────────────────────────────────
+function StepIconSearch() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+      <circle cx="40" cy="40" r="38" fill={GREEN} stroke={BLACK} strokeWidth="3" />
+      <rect x="22" y="28" width="36" height="8" rx="4" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <rect x="22" y="41" width="24" height="6" rx="3" fill={OFFWHITE} stroke={BLACK} strokeWidth="2" />
+      <circle cx="51" cy="51" r="9" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <line x1="57" y1="57" x2="64" y2="64" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+function StepIconMatch() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+      <circle cx="40" cy="40" r="38" fill={YELLOW} stroke={BLACK} strokeWidth="3" />
+      <rect x="18" y="30" width="20" height="26" rx="5" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <rect x="42" y="30" width="20" height="26" rx="5" fill={CORAL} stroke={BLACK} strokeWidth="2.5" />
+      <line x1="38" y1="43" x2="44" y2="43" stroke={BLACK} strokeWidth="3" strokeLinecap="round" />
+      <path d="M41 39 L45 43 L41 47" stroke={BLACK} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+function StepIconBorrow() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+      <circle cx="40" cy="40" r="38" fill={CORAL} stroke={BLACK} strokeWidth="3" />
+      <ellipse cx="26" cy="46" rx="12" ry="9" fill="#C8864E" stroke={BLACK} strokeWidth="2.5" />
+      <ellipse cx="54" cy="46" rx="12" ry="9" fill="#8B5E3C" stroke={BLACK} strokeWidth="2.5" />
+      <rect x="30" y="30" width="20" height="14" rx="4" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <circle cx="40" cy="37" r="4" fill={BLACK} />
+    </svg>
+  );
+}
+function StepIconRate() {
+  return (
+    <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+      <circle cx="40" cy="40" r="38" fill="#4B6EFF" stroke={BLACK} strokeWidth="3" />
+      {[28, 40, 52].map((x, i) => (
+        <polygon key={i} points={`${x},28 ${x+5},38 ${x+11},39 ${x+6},45 ${x+8},55 ${x},50 ${x-8},55 ${x-6},45 ${x-11},39 ${x-5},38`} fill={i < 2 ? YELLOW : OFFWHITE} stroke={BLACK} strokeWidth="1.5" />
+      ))}
+    </svg>
+  );
+}
+
+// ─── Trust icons ─────────────────────────────────────────────────────────────
+function TrustBadge() {
+  return (
+    <svg viewBox="0 0 72 72" fill="none" width="72" height="72">
+      <rect x="4" y="4" width="64" height="64" rx="20" fill={GREEN} stroke={BLACK} strokeWidth="3" />
+      <path d="M36 14 L46 20 V34 C46 44 36 50 36 50 C36 50 26 44 26 34 V20 Z" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <path d="M30 34 L35 39 L44 28" stroke={BLACK} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function TrustStar() {
+  return (
+    <svg viewBox="0 0 72 72" fill="none" width="72" height="72">
+      <rect x="4" y="4" width="64" height="64" rx="20" fill={YELLOW} stroke={BLACK} strokeWidth="3" />
+      <polygon points="36,16 41,28 55,29 44,39 48,52 36,44 24,52 28,39 17,29 31,28" fill={OFFWHITE} stroke={BLACK} strokeWidth="2" />
+      <circle cx="36" cy="34" r="5" fill={BLACK} />
+    </svg>
+  );
+}
+function TrustLock() {
+  return (
+    <svg viewBox="0 0 72 72" fill="none" width="72" height="72">
+      <rect x="4" y="4" width="64" height="64" rx="20" fill={CORAL} stroke={BLACK} strokeWidth="3" />
+      <rect x="22" y="36" width="28" height="22" rx="6" fill={OFFWHITE} stroke={BLACK} strokeWidth="2.5" />
+      <path d="M27 36 V28 C27 21 45 21 45 28 V36" stroke={BLACK} strokeWidth="3" strokeLinecap="round" fill="none" />
+      <circle cx="36" cy="47" r="4" fill={BLACK} />
+      <line x1="36" y1="51" x2="36" y2="55" stroke={BLACK} strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ─── Animated AI demo strip ──────────────────────────────────────────────────
+const DEMO_TEXT = "I need to make a reel for my club event tomorrow";
+const CHIPS = [
+  { label: "📷 Camera", bg: GREEN },
+  { label: "🎙 Mic", bg: CORAL },
+  { label: "🔦 Lighting", bg: YELLOW },
+  { label: "🎬 Tripod", bg: "#4B6EFF" },
 ];
 
-const popularSearches = ['Camera', 'Tripod', 'Mic', 'Projector', 'Textbooks', 'Lab Equipment'];
+function DemoStrip({ onFindClick }: { onFindClick: () => void }) {
+  const [displayed, setDisplayed] = useState("");
+  const [phase, setPhase] = useState<"typing" | "resolving" | "chips">("typing");
+  const [visibleChips, setVisibleChips] = useState<number[]>([]);
+  const rafRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-export const Home = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchCategory, setSearchCategory] = useState('All');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/ai-discovery?q=${encodeURIComponent(searchQuery)}&cat=${encodeURIComponent(searchCategory)}`);
-    }
+  const runCycle = () => {
+    let i = 0;
+    setDisplayed(""); setPhase("typing"); setVisibleChips([]);
+    const typeNext = () => {
+      i++;
+      setDisplayed(DEMO_TEXT.slice(0, i));
+      if (i < DEMO_TEXT.length) {
+        rafRef.current = setTimeout(typeNext, 38 + Math.random() * 30);
+      } else {
+        rafRef.current = setTimeout(() => {
+          setPhase("resolving");
+          rafRef.current = setTimeout(() => {
+            setPhase("chips");
+            CHIPS.forEach((_, idx) => {
+              rafRef.current = setTimeout(() => setVisibleChips(prev => [...prev, idx]), idx * 200);
+            });
+          }, 900);
+        }, 600);
+      }
+    };
+    rafRef.current = setTimeout(typeNext, 500);
   };
 
-  const morphTexts = [
-    `<span class="font-serif text-[4.5rem] leading-[1.05] tracking-tight text-white drop-shadow-xl">Campus Circular</span>`,
-    `<div class="flex flex-col items-center justify-center w-full">
-      <h2 class="font-serif text-[4.5rem] leading-[1.05] tracking-tight mb-6 text-white drop-shadow-xl">
-        Borrow what you need.<br />
-        Share what you have.
-      </h2>
-      <p class="text-[1.1rem] leading-relaxed max-w-lg mx-auto text-white/90 drop-shadow-md font-sans">
-        Access useful resources across your campus<br />without buying things you only need temporarily.
-      </p>
-    </div>`
-  ];
+  useEffect(() => { runCycle(); return () => { if (rafRef.current) clearTimeout(rafRef.current); }; }, []);
+
+  useEffect(() => {
+    if (phase === "chips" && visibleChips.length === CHIPS.length) {
+      const loop = setTimeout(runCycle, 3500);
+      return () => clearTimeout(loop);
+    }
+  }, [phase, visibleChips]);
 
   return (
-    <div className="flex flex-col bg-background font-sans min-h-screen">
-      
-      {/* Animated Hero Section */}
-      <section className="w-full bg-[#EAE8E3]">
-        <ScrollExpand
-          src="/HeroImage.jpg"
-          alt="Product hero"
-          title={<TypingAnimation>Campus Circular</TypingAnimation>}
-          scrollHint="Scroll"
-          useWindowScroll
+    <div className="rounded-3xl p-8 md:p-12" style={{ background: BLACK, border: `4px solid ${BLACK}` }}>
+      <div className="rounded-2xl px-6 py-5 mb-6 flex items-center gap-3 min-h-[72px]" style={{ background: OFFWHITE, border: `3px solid ${BLACK}` }}>
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle cx="9" cy="9" r="7" stroke={BLACK} strokeWidth="2.5" />
+          <line x1="14" y1="14" x2="20" y2="20" stroke={BLACK} strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+        <span className="text-lg flex-1" style={{ color: BLACK, fontFamily: 'inherit' }}>
+          {displayed}
+          {phase === "typing" && <span className="inline-block w-0.5 h-5 ml-0.5 align-middle animate-pulse" style={{ background: BLACK }} />}
+          {phase === "resolving" && <span style={{ color: CORAL }} className="ml-2 text-sm">thinking...</span>}
+        </span>
+        <button
+          onClick={onFindClick}
+          className="px-4 py-2 rounded-xl font-bold text-sm transition-all hover:scale-105"
+          style={{ background: GREEN, color: BLACK, border: `2px solid ${BLACK}` }}
         >
-          <MorphingText texts={morphTexts} />
-        </ScrollExpand>
-      </section>
-
-      {/* Search Section */}
-      <section className="container mx-auto px-6 max-w-[1400px] -mt-20 relative z-10 mb-20">
-        <div className="max-w-2xl bg-card rounded-xl shadow-2xl p-6 border border-border mx-auto">
-          {/* Search Box */}
-          <div className="mb-6">
-            <form onSubmit={handleSearch} className="flex w-full bg-background rounded-md shadow-sm overflow-hidden border border-border">
-              <div className="flex items-center pl-3 border-r border-border bg-muted/30">
-                <select 
-                  className="bg-transparent text-[13px] font-medium outline-none pr-2 py-3 text-muted-foreground cursor-pointer"
-                  value={searchCategory}
-                  onChange={(e) => setSearchCategory(e.target.value)}
-                >
-                  <option value="All">All Categories</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Cameras">Cameras</option>
-                  <option value="Audio">Audio</option>
-                  <option value="Books">Books</option>
-                </select>
-              </div>
-              <div className="flex items-center pl-4 text-muted-foreground">
-                <Search className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col flex-1 py-3 px-3">
-                <input
-                  type="text"
-                  placeholder="What do you need?"
-                  className="w-full bg-transparent text-[15px] font-medium outline-none placeholder:text-muted-foreground/70"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="text-[11px] text-muted-foreground mt-0.5">
-                  e.g. camera, tripod and microphone for my event tomorrow
-                </div>
-              </div>
-              <button type="submit" className="bg-[#16352F] text-white px-6 flex items-center justify-center hover:bg-[#0D2621] transition-colors">
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            </form>
-          </div>
-
-          {/* Popular Searches */}
-          <div>
-            <div className="text-[11px] font-bold text-foreground mb-3">Popular searches</div>
-            <div className="flex flex-wrap gap-2">
-              {popularSearches.map(tag => (
-                <button key={tag} className="px-4 py-1.5 bg-background border border-border rounded-full text-xs font-medium text-foreground hover:border-primary/30 transition-colors">
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+          Find
+        </button>
+      </div>
+      {phase !== "typing" && (
+        <div className="flex justify-center mb-5">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 4 L14 22" stroke={GREEN} strokeWidth="3" strokeLinecap="round" />
+            <path d="M7 16 L14 24 L21 16" stroke={GREEN} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
-      </section>
-
-      {/* Floating Impact Stats Bar */}
-      <section className="container mx-auto px-6 max-w-[1400px] relative z-10 -mt-10 mb-20">
-        <div className="bg-[#1A3129] rounded-xl shadow-xl text-white py-8 px-10 grid grid-cols-2 md:grid-cols-5 gap-8 border border-[#2A4139]">
-          <div className="flex items-center gap-4 border-r border-white/10">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-primary-light flex-shrink-0">
-              <span className="font-serif italic text-lg">₹</span>
+      )}
+      {phase === "chips" && (
+        <div className="flex flex-wrap gap-3 justify-center">
+          {CHIPS.map((chip, idx) => visibleChips.includes(idx) ? (
+            <div key={chip.label} className="px-5 py-3 rounded-2xl font-bold text-lg transition-all" style={{ background: chip.bg, color: chip.bg === YELLOW || chip.bg === GREEN ? BLACK : OFFWHITE, border: `2.5px solid ${BLACK}` }}>
+              {chip.label}
             </div>
-            <div>
-              <div className="text-2xl font-serif">₹2.4L+</div>
-              <div className="text-[11px] text-white/70 font-medium">Money saved</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4 border-r border-white/10">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-primary-light flex-shrink-0">
-              <RotateCcw className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-serif">1,240+</div>
-              <div className="text-[11px] text-white/70 font-medium">Resources reused</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4 border-r border-white/10">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-primary-light flex-shrink-0">
-              <Handshake className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-serif">386+</div>
-              <div className="text-[11px] text-white/70 font-medium">Active members</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4 border-r border-white/10">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-primary-light flex-shrink-0">
-              <Clock className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-serif">94%</div>
-              <div className="text-[11px] text-white/70 font-medium">On-time returns</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-primary-light flex-shrink-0">
-              <Activity className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-serif">72%</div>
-              <div className="text-[11px] text-white/70 font-medium leading-tight mt-1">Reduction in new purchases</div>
-            </div>
-          </div>
+          ) : null)}
         </div>
-      </section>
-
-      {/* Main Content Area */}
-      <section className="container mx-auto px-6 max-w-[1400px] pb-24">
-        <div className="grid lg:grid-cols-[1fr_1fr] gap-20">
-          
-          {/* How It Works */}
-          <div>
-            <div className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-3">
-              How It Works
-            </div>
-            <h2 className="text-2xl font-serif mb-12 text-foreground">
-              Simple steps, trusted by everyone.
-            </h2>
-            
-            <div className="flex justify-between relative">
-              {/* Line connector */}
-              <div className="absolute top-6 left-10 right-10 h-[1px] border-t border-dashed border-border -z-10"></div>
-              
-              <div className="flex flex-col items-center text-center max-w-[80px]">
-                <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-4 text-foreground">
-                  <Search className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold mb-1">1. Discover</div>
-                <div className="text-[10px] text-muted-foreground leading-snug">Find the perfect resource with AI assistance</div>
-              </div>
-              
-              <div className="flex flex-col items-center text-center max-w-[80px]">
-                <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-4 text-foreground">
-                  <Send className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold mb-1">2. Request</div>
-                <div className="text-[10px] text-muted-foreground leading-snug">Send a request to borrow what you need</div>
-              </div>
-              
-              <div className="flex flex-col items-center text-center max-w-[80px]">
-                <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-4 text-foreground">
-                  <Handshake className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold mb-1">3. Borrow</div>
-                <div className="text-[10px] text-muted-foreground leading-snug">Complete a safe handover and use with care</div>
-              </div>
-              
-              <div className="flex flex-col items-center text-center max-w-[80px]">
-                <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-4 text-foreground">
-                  <RotateCcw className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold mb-1">4. Return</div>
-                <div className="text-[10px] text-muted-foreground leading-snug">Return on time, same condition as received</div>
-              </div>
-              
-              <div className="flex flex-col items-center text-center max-w-[80px]">
-                <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-4 text-foreground">
-                  <Star className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold mb-1">5. Review</div>
-                <div className="text-[10px] text-muted-foreground leading-snug">Rate your experience and build trust</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Browse By Category */}
-          <div>
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <div className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-3">
-                  Browse by category
-                </div>
-                <h2 className="text-2xl font-serif text-foreground">
-                  Explore what's available<br />around you.
-                </h2>
-              </div>
-              <div className="flex gap-2">
-                <button className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors">
-                  <ArrowRight className="h-4 w-4 rotate-180 text-muted-foreground" />
-                </button>
-                <button className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors">
-                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-              {categories.map((cat, i) => (
-                <div key={i} className="flex flex-col items-center justify-center aspect-[3/4] bg-[#F5F5F0] rounded-xl cursor-pointer hover:bg-[#EAE8E3] transition-colors border border-border/50">
-                  <cat.icon className="h-6 w-6 text-foreground/80 mb-3" strokeWidth={1.5} />
-                  <div className="text-[10px] font-bold text-center text-foreground">{cat.name}</div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 flex justify-center md:justify-start">
-              <button className="text-xs font-bold flex items-center gap-2 hover:text-primary transition-colors">
-                View all categories <ArrowRight className="h-3 w-3" />
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Featured Resources (Ecommerce style) */}
-      <section className="container mx-auto px-6 max-w-[1400px] pb-24 border-t border-border pt-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <div className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase mb-3">
-              Discover Resources
-            </div>
-            <h2 className="text-2xl font-serif text-foreground">
-              Available right now.
-            </h2>
-          </div>
-          <Button onClick={() => navigate('/discover')} variant="outline">Browse All</Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { id: '1', name: 'Sony Alpha 6400', price: 300, deposit: 1000, img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400', rating: 4.9 },
-            { id: '2', name: 'Arduino Starter Kit', price: 50, deposit: 300, img: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&q=80&w=400', rating: 4.7 },
-            { id: '3', name: 'Rode Wireless GO II', price: 200, deposit: 1500, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=400', rating: 4.8 },
-            { id: '4', name: 'Scientific Calculator', price: 20, deposit: 100, img: 'https://images.unsplash.com/photo-1574607383476-f517f260d30b?auto=format&fit=crop&q=80&w=400', rating: 4.5 },
-          ].map((item, i) => (
-            <div key={i} className="group flex flex-col gap-3">
-              {/* Image with Pixel Transition */}
-              <div className="aspect-square rounded-xl overflow-hidden bg-muted border border-border">
-                <PixelTransition
-                  className="w-full h-full"
-                  gridSize={10}
-                  animationStepDuration={0.3}
-                  pixelColor="#16352F"
-                  firstContent={
-                    <img src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  }
-                  secondContent={
-                    <div className="w-full h-full bg-[#1A3129] flex flex-col items-center justify-center text-white p-4 text-center">
-                      <Star className="h-6 w-6 text-yellow-400 fill-yellow-400 mb-2" />
-                      <div className="font-bold text-lg mb-1">{item.rating} / 5.0</div>
-                      <div className="text-xs text-white/70 mb-4">Trusted Owner</div>
-                      <Button size="sm" variant="secondary" className="w-full text-xs h-8" onClick={(e) => { e.stopPropagation(); navigate(`/resource/${item.id}`); }}>
-                        View Details
-                      </Button>
-                    </div>
-                  }
-                />
-              </div>
-              
-              {/* Product Info */}
-              <div>
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-[15px]">{item.name}</h3>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-bold">₹{item.price}</span>
-                  <span className="text-muted-foreground text-xs">/ day</span>
-                  <span className="text-muted-foreground text-[10px]">•</span>
-                  <span className="text-muted-foreground text-xs">₹{item.deposit} deposit</span>
-                </div>
-              </div>
-            </div>
+      )}
+      {phase === "resolving" && (
+        <div className="flex gap-3 justify-center">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="w-3 h-3 rounded-full animate-bounce" style={{ background: GREEN, animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Home Page ───────────────────────────────────────────────────────────────
+export const Home = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div style={{ background: OFFWHITE, color: BLACK, overflowX: "hidden", fontFamily: "'Inter', sans-serif" }}>
+      <style>{`
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+      `}</style>
+
+      {/* ── HERO ── */}
+      <section className="relative px-6 md:px-12 pt-16 pb-24 md:pt-20 md:pb-32 overflow-hidden">
+        <PlusIcon color={CORAL} size={20} style={{ position: "absolute", top: 40, left: 30, opacity: 0.7 }} />
+        <PlusIcon color={GREEN} size={14} style={{ position: "absolute", top: 100, right: 80, opacity: 0.6 }} />
+        <DotIcon color={YELLOW} size={12} style={{ position: "absolute", top: 60, right: "35%", opacity: 0.8 }} />
+        <DotIcon color={CORAL} size={8} style={{ position: "absolute", bottom: 80, left: "20%", opacity: 0.6 }} />
+        <PlusIcon color={BLACK} size={12} style={{ position: "absolute", bottom: 120, right: 40, opacity: 0.3 }} />
+
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full font-semibold text-sm" style={{ background: YELLOW, color: BLACK, border: `2px solid ${BLACK}` }}>
+              <span>✦</span> Peer-to-peer campus sharing
+            </div>
+            <h1 className="font-black leading-none mb-6" style={{ fontSize: "clamp(2.8rem, 6vw, 5rem)", color: BLACK, letterSpacing: "-0.03em" }}>
+              Why buy what someone nearby{" "}
+              <span className="relative inline-block" style={{ color: GREEN, WebkitTextStroke: `3px ${BLACK}`, textShadow: `4px 4px 0 ${BLACK}` }}>
+                already has?
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl mb-10 max-w-md leading-relaxed" style={{ color: "#444" }}>
+              Discover, lend, borrow, donate, and request resources across your campus community — in seconds.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={() => navigate('/discover')}
+                className="px-8 py-4 rounded-2xl font-black text-lg transition-all hover:scale-105 hover:-translate-y-0.5 active:scale-95"
+                style={{ background: GREEN, color: BLACK, border: `3px solid ${BLACK}`, boxShadow: `5px 5px 0 ${BLACK}` }}
+              >
+                Find Something
+              </button>
+              <button
+                onClick={() => navigate('/dashboard?tab=listings')}
+                className="px-8 py-4 rounded-2xl font-black text-lg transition-all hover:scale-105 hover:-translate-y-0.5 active:scale-95"
+                style={{ background: OFFWHITE, color: BLACK, border: `3px solid ${BLACK}`, boxShadow: `5px 5px 0 ${BLACK}` }}
+              >
+                List Your Stuff →
+              </button>
+            </div>
+            <div className="mt-10 flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[GREEN, CORAL, "#4B6EFF", YELLOW].map((c, i) => (
+                  <div key={i} className="w-9 h-9 rounded-full border-2 font-bold text-xs flex items-center justify-center" style={{ background: c, borderColor: BLACK, color: BLACK }}>
+                    {["A", "B", "C", "D"][i]}
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm" style={{ color: "#666" }}>
+                <strong style={{ color: BLACK }}>2,400+</strong> students already sharing
+              </p>
+            </div>
+          </div>
+          <div className="relative flex justify-center">
+            <div className="float-anim"><HeroIllustration /></div>
+            {[
+              { label: "📸 Camera", top: "5%", right: "0%", bg: CORAL },
+              { label: "📚 Textbook", top: "75%", right: "5%", bg: YELLOW },
+              { label: "🎸 Guitar", top: "80%", left: "0%", bg: GREEN },
+            ].map(tag => (
+              <div key={tag.label} className="absolute px-3 py-1.5 rounded-xl font-bold text-xs whitespace-nowrap"
+                style={{ background: tag.bg, border: `2px solid ${BLACK}`, boxShadow: `2px 2px 0 ${BLACK}`, top: tag.top, right: (tag as any).right, left: (tag as any).left }}>
+                {tag.label}
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
+      {/* ── MARQUEE TICKER ── */}
+      <div style={{ background: BLACK, borderTop: `3px solid ${BLACK}`, borderBottom: `3px solid ${BLACK}`, overflow: "hidden", padding: "14px 0" }}>
+        <div className="flex gap-12 whitespace-nowrap" style={{ animation: "marquee 18s linear infinite" }}>
+          {["📷 Cameras", "💻 Laptops", "📚 Textbooks", "🎙 Microphones", "🧮 Calculators", "🎸 Instruments", "⚽ Sports Gear", "🔦 Lighting", "🎬 Tripods", "🛠 Tools", "🎒 Backpacks", "🎪 Event Gear",
+            "📷 Cameras", "💻 Laptops", "📚 Textbooks", "🎙 Microphones", "🧮 Calculators", "🎸 Instruments", "⚽ Sports Gear", "🔦 Lighting", "🎬 Tripods", "🛠 Tools", "🎒 Backpacks", "🎪 Event Gear"].map((item, i) => (
+            <span key={i} className="font-bold text-base" style={{ color: GREEN }}>
+              {item} <span style={{ color: CORAL }}>✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="px-6 md:px-12 py-24 md:py-32 relative">
+        <PlusIcon color={GREEN} size={22} style={{ position: "absolute", top: 60, right: 60, opacity: 0.5 }} />
+        <DotIcon color={CORAL} size={14} style={{ position: "absolute", bottom: 80, left: 40, opacity: 0.5 }} />
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-16">
+            <div className="inline-block mb-4 px-4 py-1.5 rounded-full font-semibold text-sm" style={{ background: CORAL, color: OFFWHITE, border: `2px solid ${BLACK}` }}>The flow</div>
+            <h2 className="font-black leading-tight" style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)", letterSpacing: "-0.03em" }}>
+              Borrowing in four easy steps.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-4 gap-10 md:gap-6 relative">
+            <div className="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5 z-0"
+              style={{ background: `repeating-linear-gradient(to right, ${BLACK} 0, ${BLACK} 8px, transparent 8px, transparent 18px)` }} />
+            {[
+              { icon: <StepIconSearch />, num: "01", title: "Describe what you need", body: "Type it in plain language — no browsing required. Just say what you're looking for." },
+              { icon: <StepIconMatch />, num: "02", title: "Get matched resources", body: "AI surfaces the best-fit items nearby sorted by distance, trust score and condition." },
+              { icon: <StepIconBorrow />, num: "03", title: "Borrow & return", body: "Confirm the exchange, pick up from your peer, and return it by the agreed deadline." },
+              { icon: <StepIconRate />, num: "04", title: "Rate & build trust", body: "Leave a review, build your trust score, and unlock more borrowing power over time." },
+            ].map(step => (
+              <div key={step.num} className="relative z-10 flex flex-col items-start md:items-center md:text-center gap-4">
+                <div className="relative">
+                  {step.icon}
+                  <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center font-black text-xs" style={{ background: OFFWHITE, border: `2px solid ${BLACK}`, color: BLACK }}>
+                    {step.num}
+                  </div>
+                </div>
+                <h3 className="font-black text-lg leading-tight">{step.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#555" }}>{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── AI DEMO STRIP ── */}
+      <section className="px-6 md:px-12 py-24 md:py-32" style={{ background: BLACK }}>
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-12 text-center">
+            <div className="inline-block mb-4 px-4 py-1.5 rounded-full font-semibold text-sm" style={{ background: GREEN, color: BLACK, border: `2px solid ${GREEN}` }}>✦ Signature feature</div>
+            <h2 className="font-black leading-tight mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3.2rem)", color: OFFWHITE, letterSpacing: "-0.03em" }}>
+              Just say what you need.
+            </h2>
+            <p className="text-base md:text-lg" style={{ color: "#999" }}>
+              No filters. No categories. Just describe your situation and we'll figure it out.
+            </p>
+          </div>
+          <DemoStrip onFindClick={() => navigate('/ai-discovery?q=' + encodeURIComponent(DEMO_TEXT))} />
+          <p className="text-center mt-6 text-sm" style={{ color: "#666" }}>
+            The platform identifies every item you'll actually need — not just the one you searched for.
+          </p>
+        </div>
+      </section>
+
+      {/* ── TRUST & SAFETY ── */}
+      <section className="px-6 md:px-12 py-24 md:py-32 relative" style={{ background: OFFWHITE }}>
+        <PlusIcon color={BLACK} size={18} style={{ position: "absolute", top: 50, left: 50, opacity: 0.2 }} />
+        <PlusIcon color={CORAL} size={14} style={{ position: "absolute", bottom: 60, right: 60, opacity: 0.4 }} />
+        <DotIcon color={YELLOW} size={16} style={{ position: "absolute", top: 80, right: "30%", opacity: 0.5 }} />
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-16">
+            <div className="inline-block mb-4 px-4 py-1.5 rounded-full font-semibold text-sm" style={{ background: YELLOW, color: BLACK, border: `2px solid ${BLACK}` }}>Trust & Safety</div>
+            <h2 className="font-black leading-tight max-w-lg" style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)", letterSpacing: "-0.03em" }}>
+              Built on real campus trust.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: <TrustBadge />, title: "Verified Profiles", body: "Every member is verified through their campus email. Real students, real accountability. No anonymous strangers.", accent: GREEN },
+              { icon: <TrustStar />, title: "Trust Scores", body: "Ratings from every exchange build your trust score. The better your record, the more you can borrow — and lend.", accent: YELLOW },
+              { icon: <TrustLock />, title: "Deposits & Protection", body: "Optional refundable security deposits protect lenders. Damage reports are handled fairly with evidence from both sides.", accent: CORAL },
+            ].map(card => (
+              <div key={card.title} className="rounded-3xl p-8 flex flex-col gap-5 transition-transform hover:-translate-y-1" style={{ background: "#fff", border: `3px solid ${BLACK}`, boxShadow: `6px 6px 0 ${BLACK}` }}>
+                {card.icon}
+                <h3 className="font-black text-xl">{card.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#555" }}>{card.body}</p>
+                <div className="mt-auto">
+                  <button onClick={() => navigate('/discover')} className="inline-block px-3 py-1 rounded-full font-semibold text-xs" style={{ background: card.accent, color: BLACK, border: `1.5px solid ${BLACK}` }}>
+                    Learn more →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STATS STRIP ── */}
+      <section className="px-6 md:px-12 py-20 md:py-28 relative overflow-hidden" style={{ background: GREEN, borderTop: `4px solid ${BLACK}`, borderBottom: `4px solid ${BLACK}` }}>
+        <PlusIcon color={BLACK} size={24} style={{ position: "absolute", top: 30, left: 20, opacity: 0.25 }} />
+        <PlusIcon color={BLACK} size={16} style={{ position: "absolute", bottom: 30, right: 40, opacity: 0.2 }} />
+        <DotIcon color={CORAL} size={20} style={{ position: "absolute", top: "50%", left: 80, opacity: 0.4 }} />
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-12 md:gap-8 text-center md:text-left">
+            {[
+              { num: "2,400+", label: "Active members", sub: "across 6 campuses" },
+              { num: "8,900+", label: "Resources shared", sub: "since launch day" },
+              { num: "₹42L+", label: "Money saved", sub: "by not buying new" },
+            ].map((stat, i) => (
+              <div key={i} className="relative">
+                {i > 0 && <div className="hidden md:block absolute left-0 top-0 bottom-0 w-0.5" style={{ background: BLACK, opacity: 0.25 }} />}
+                <div className="font-black leading-none mb-2" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)", color: BLACK, letterSpacing: "-0.04em" }}>{stat.num}</div>
+                <div className="font-black text-xl mb-1" style={{ color: BLACK }}>{stat.label}</div>
+                <div className="text-sm" style={{ color: "#1a5a35" }}>{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section className="px-6 md:px-12 py-24 md:py-32" style={{ background: OFFWHITE }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-14">
+            <div className="inline-block mb-4 px-4 py-1.5 rounded-full font-semibold text-sm" style={{ background: "#4B6EFF", color: OFFWHITE, border: `2px solid ${BLACK}` }}>Community voices</div>
+            <h2 className="font-black leading-tight" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", letterSpacing: "-0.03em" }}>
+              Real students, real saves.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { quote: "Borrowed a DSLR and tripod for my film project in 20 minutes. Saved ₹8,000 vs renting from a shop.", name: "Arjun M.", dept: "B.Des, 3rd year", bg: GREEN },
+              { quote: "Listed my old calc before exams — got 4 borrowing requests in the first hour. This thing works.", name: "Priya K.", dept: "B.Tech ECE, 2nd year", bg: CORAL },
+              { quote: "The AI part is lowkey insane. I just described my situation and it found stuff I hadn't even thought to search for.", name: "Rohan S.", dept: "MBA, 1st year", bg: YELLOW },
+            ].map(t => (
+              <div key={t.name} className="rounded-3xl p-7 flex flex-col gap-4" style={{ background: t.bg, border: `3px solid ${BLACK}`, boxShadow: `5px 5px 0 ${BLACK}` }}>
+                <div className="text-2xl" style={{ color: BLACK, opacity: 0.3 }}>"</div>
+                <p className="text-base leading-relaxed font-medium" style={{ color: BLACK }}>{t.quote}</p>
+                <div className="mt-auto pt-4 border-t-2 flex items-center gap-3" style={{ borderColor: BLACK }}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-base" style={{ background: BLACK, color: t.bg }}>
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <div className="font-black text-sm">{t.name}</div>
+                    <div className="text-xs" style={{ color: "#444" }}>{t.dept}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER CTA ── */}
+      <section className="px-6 md:px-12 py-24 md:py-36 text-center relative overflow-hidden" style={{ background: BLACK }}>
+        <PlusIcon color={GREEN} size={28} style={{ position: "absolute", top: 40, left: 40, opacity: 0.4 }} />
+        <PlusIcon color={CORAL} size={18} style={{ position: "absolute", bottom: 50, right: 60, opacity: 0.35 }} />
+        <DotIcon color={YELLOW} size={18} style={{ position: "absolute", top: "30%", right: 100, opacity: 0.3 }} />
+        <div className="max-w-3xl mx-auto relative z-10">
+          <p className="font-semibold text-sm mb-5" style={{ color: GREEN }}>✦ your campus community is waiting</p>
+          <h2 className="font-black leading-tight mb-6" style={{ fontSize: "clamp(2.5rem, 6vw, 4.8rem)", color: OFFWHITE, letterSpacing: "-0.04em" }}>
+            Stop buying.<br />
+            <span style={{ color: GREEN }}>Start sharing.</span>
+          </h2>
+          <p className="text-lg md:text-xl mb-12 max-w-md mx-auto leading-relaxed" style={{ color: "#888" }}>
+            Join Campus Circular and tap into everything your campus already has.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={() => navigate('/login')}
+              className="px-10 py-5 rounded-2xl font-black text-xl transition-all hover:scale-105 hover:-translate-y-1 active:scale-95"
+              style={{ background: GREEN, color: BLACK, border: `3px solid ${GREEN}`, boxShadow: `6px 6px 0 #2EE88755` }}
+            >
+              Sign up — it's free
+            </button>
+            <button
+              onClick={() => navigate('/discover')}
+              className="px-10 py-5 rounded-2xl font-black text-xl transition-all hover:scale-105 active:scale-95"
+              style={{ background: "transparent", color: OFFWHITE, border: `3px solid #555` }}
+            >
+              Browse resources →
+            </button>
+          </div>
+          <p className="mt-8 text-xs" style={{ color: "#555" }}>
+            Free forever for students · No credit card needed · Verified campus community
+          </p>
+        </div>
+      </section>
     </div>
   );
 };
