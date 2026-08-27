@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 20% 96%; /* Canvas: #F7F7F3 */
+    --foreground: 160 16% 11%; /* Primary Text: #17201D */
+    
+    --card: 0 0% 100%; /* Surface: #FFFFFF */
+    --card-foreground: 160 16% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 16% 11%;
+    
+    --primary: 168 41% 15%; /* Primary: #16352F */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 75 12% 94%; /* Surface Muted: #F1F2EE */
+    --secondary-foreground: 160 16% 11%;
+    
+    --muted: 75 12% 94%;
+    --muted-foreground: 153 5% 42%; /* Secondary Text: #66716C */
+    
+    --accent: 75 12% 94%;
+    --accent-foreground: 160 16% 11%;
+    
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 132 7% 88%; /* Border: #DDE2DE */
+    --input: 132 7% 88%;
+    --ring: 168 41% 15%;
+    
+    --radius: 0.5rem; /* 8px by default for buttons */
+  }
+
+  .dark {
+    --background: 163 20% 7%; /* Background: #0E1513 */
+    --foreground: 120 11% 95%; /* Text Primary: #F0F3F0 */
+    
+    --card: 160 18% 10%; /* Surface: #141D1A */
+    --card-foreground: 120 11% 95%;
+    
+    --popover: 160 18% 10%;
+    --popover-foreground: 120 11% 95%;
+    
+    --primary: 161 26% 59%; /* Primary: #7FAE9F */
+    --primary-foreground: 163 20% 7%;
+    
+    --secondary: 162 16% 12%; /* Surface Raised: #1A2421 */
+    --secondary-foreground: 120 11% 95%;
+    
+    --muted: 162 16% 12%;
+    --muted-foreground: 150 6% 67%; /* Text Secondary: #A7B1AC */
+    
+    --accent: 162 16% 12%;
+    --accent-foreground: 120 11% 95%;
+    
+    --destructive: 0 50% 40%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 156 11% 18%; /* Border: #29332F */
+    --input: 156 11% 18%;
+    --ring: 161 26% 59%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
