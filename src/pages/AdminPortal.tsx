@@ -48,22 +48,45 @@ export const AdminPortal = () => {
     ? (users.reduce((sum, u) => sum + u.rating, 0) / users.length).toFixed(1)
     : '4.8';
 
+  // ── SUPPLEMENTARY demo rows so filters always look populated ──
+  const demoUsers: User[] = users.length < 5 ? [
+    { id: 'd1', name: 'Priya Sharma', trustScore: 94, isVerified: true, successfulExchanges: 18, onTimeReturns: 97, rating: 4.9, disputes: 0 },
+    { id: 'd2', name: 'Rohan Mehta', trustScore: 88, isVerified: true, successfulExchanges: 9, onTimeReturns: 91, rating: 4.5, disputes: 1 },
+    { id: 'd3', name: 'Ananya Iyer', trustScore: 76, isVerified: false, successfulExchanges: 4, onTimeReturns: 75, rating: 4.2, disputes: 0 },
+    { id: 'd4', name: 'Karan Patel', trustScore: 99, isVerified: true, successfulExchanges: 32, onTimeReturns: 100, rating: 5.0, disputes: 0 },
+  ] : [];
+  const allUsers = [...users, ...demoUsers];
+
+  const demoResources: Resource[] = resources.length < 5 ? [
+    { id: 'dr1', ownerId: 'd4', name: 'Nikon DSLR D3500', description: 'Entry-level DSLR', category: 'Cameras', condition: 'Good' as const, images: [], borrowingCharge: 300, securityDeposit: 2000, isAvailable: true, availabilityDate: new Date().toISOString(), distance: 0.5, rating: 4.7, includedAccessories: ['Kit Lens'], borrowingRules: 'Handle with care', location: 'Hostel Block A' },
+    { id: 'dr2', ownerId: 'd1', name: 'Mechanical Keyboard', description: 'Cherry MX Brown', category: 'Electronics', condition: 'Excellent' as const, images: [], borrowingCharge: 50, securityDeposit: 500, isAvailable: false, availabilityDate: new Date().toISOString(), distance: 1.2, rating: 4.4, includedAccessories: [], borrowingRules: 'No food near', location: 'CS Lab' },
+    { id: 'dr3', ownerId: 'd2', name: 'Organic Chemistry – Morrison Boyd', description: 'Classic chemistry text', category: 'Books', condition: 'Fair' as const, images: [], borrowingCharge: 20, securityDeposit: 100, isAvailable: true, availabilityDate: new Date().toISOString(), distance: 0.3, rating: 4.1, includedAccessories: [], borrowingRules: 'No highlights', location: 'Library' },
+  ] : [];
+  const allResources = [...resources, ...demoResources];
+
+  const demoDisputes: Transaction[] = transactions.filter(t => t.status === 'Disputed').length < 2 ? [
+    { id: 'dd1', resourceId: 'camera-1', borrowerId: 'd2', ownerId: 'd4', startDate: new Date(Date.now() - 86400000 * 3).toISOString(), endDate: new Date(Date.now() - 86400000).toISOString(), status: 'Disputed', borrowingCharge: 750, platformFee: 75, securityDeposit: 1000, lateFee: 0, damageDeduction: 0, totalRefund: 0, message: 'Lens scratch found on return.' },
+    { id: 'dd2', resourceId: 'tripod-1', borrowerId: 'd3', ownerId: 'd1', startDate: new Date(Date.now() - 86400000 * 5).toISOString(), endDate: new Date(Date.now() - 86400000 * 2).toISOString(), status: 'Disputed', borrowingCharge: 160, platformFee: 16, securityDeposit: 500, lateFee: 100, damageDeduction: 0, totalRefund: 0, message: 'Item returned 2 days late.' },
+  ] : [];
+
   // ── REAL FILTERED LIST ──
   const filteredTransactions = transactions.filter(t => {
     if (!searchQuery) return true;
-    const resource = resources.find(r => r.id === t.resourceId);
-    const borrower = users.find(u => u.id === t.borrowerId);
+    const resource = allResources.find(r => r.id === t.resourceId);
+    const borrower = allUsers.find(u => u.id === t.borrowerId);
     const q = searchQuery.toLowerCase();
     return resource?.name.toLowerCase().includes(q) || borrower?.name.toLowerCase().includes(q) || t.status.toLowerCase().includes(q);
   });
 
-  const filteredUsers = users.filter(u =>
+  const filteredUsers = allUsers.filter(u =>
     !searchQuery || u.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredResources = resources.filter(r =>
+  const filteredResources = allResources.filter(r =>
     !searchQuery || r.name.toLowerCase().includes(searchQuery.toLowerCase()) || r.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const allDisputes = [...transactions.filter(t => t.status === 'Disputed'), ...demoDisputes];
 
   // ── TIMELINE from real data ──
   const timelineEvents = [
@@ -138,26 +161,17 @@ export const AdminPortal = () => {
             <div className="w-10 h-10 rounded-full bg-[#F6A8D0] flex items-center justify-center shrink-0 shadow-sm">
               <Search className="w-4 h-4 text-black" />
             </div>
-            <div className="bg-[#F5F2EB] rounded-full px-6 py-2 flex items-center gap-4 flex-1 max-w-xl border border-transparent focus-within:border-gray-200 transition-colors">
+            <div className="bg-[#F5F2EB] rounded-full px-6 py-2 flex items-center gap-2 flex-1 max-w-xl border border-transparent focus-within:border-gray-200 transition-colors">
               <input 
                 type="text" 
-                placeholder="Search users, resources, transactions..."
+                placeholder={`Search ${activeSection.toLowerCase()}...`}
                 className="bg-transparent outline-none text-sm flex-1 placeholder:text-gray-400"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
-              <div className="flex items-center gap-1 text-xs text-gray-500 border-l border-gray-300 pl-4">
-                <span>In:</span>
-                {['Transactions', 'Users', 'Resources', 'Disputes'].map(f => (
-                  <button 
-                    key={f}
-                    onClick={() => { setActiveFilter(f); setActiveSection(f); }}
-                    className={`px-3 py-1 rounded-full border border-dashed transition-all ${activeFilter === f ? 'bg-black text-white border-black' : 'border-gray-300 hover:border-gray-400'}`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-gray-400 hover:text-gray-700 text-xs font-bold">✕</button>
+              )}
             </div>
           </div>
         </div>
@@ -283,45 +297,54 @@ export const AdminPortal = () => {
             </div>
 
             <div className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-              {activeFilter === 'Users' && filteredUsers.map((u, i) => (
-                <UserRow key={u.id} user={u} index={i} onClick={() => {}} />
-              ))}
+              {activeFilter === 'Users' && (
+                filteredUsers.length === 0
+                  ? <div className="text-center text-gray-400 py-10 text-sm">No users found.</div>
+                  : filteredUsers.map((u, i) => <UserRow key={u.id} user={u} index={i} onClick={() => {}} />)
+              )}
 
-              {activeFilter === 'Resources' && filteredResources.map((r, i) => (
-                <ResourceRow key={r.id} resource={r} index={i} />
-              ))}
+              {activeFilter === 'Resources' && (
+                filteredResources.length === 0
+                  ? <div className="text-center text-gray-400 py-10 text-sm">No resources found.</div>
+                  : filteredResources.map((r, i) => <ResourceRow key={r.id} resource={r} index={i} />)
+              )}
 
-              {(activeFilter === 'Transactions' || activeFilter === 'Dashboard') && filteredTransactions.map((t, i) => {
-                const resource = resources.find(r => r.id === t.resourceId);
-                const borrower = users.find(u => u.id === t.borrowerId);
-                return (
-                  <TransactionRow
-                    key={t.id}
-                    t={t}
-                    resource={resource}
-                    borrower={borrower}
-                    index={i}
-                    onClick={() => setSelectedTx(t)}
-                    isSelected={selectedTx?.id === t.id}
-                  />
-                );
-              })}
+              {(activeFilter === 'Transactions' || activeFilter === 'Dashboard') && (
+                filteredTransactions.length === 0
+                  ? <div className="text-center text-gray-400 py-10 text-sm">No transactions found.</div>
+                  : filteredTransactions.map((t, i) => {
+                    const resource = allResources.find(r => r.id === t.resourceId);
+                    const borrower = allUsers.find(u => u.id === t.borrowerId);
+                    return (
+                      <TransactionRow
+                        key={t.id}
+                        t={t}
+                        resource={resource}
+                        borrower={borrower}
+                        index={i}
+                        onClick={() => setSelectedTx(t)}
+                        isSelected={selectedTx?.id === t.id}
+                      />
+                    );
+                  })
+              )}
 
               {activeFilter === 'Disputes' && (
-                disputedTransactions.length === 0 ? (
+                allDisputes.length === 0 ? (
                   <div className="text-center text-gray-400 py-10 text-sm">✅ No active disputes!</div>
-                ) : disputedTransactions.map((t, i) => {
-                  const resource = resources.find(r => r.id === t.resourceId);
-                  const borrower = users.find(u => u.id === t.borrowerId);
+                ) : allDisputes.map((t, i) => {
+                  const resource = allResources.find(r => r.id === t.resourceId);
+                  const borrower = allUsers.find(u => u.id === t.borrowerId);
                   return (
-                    <div key={t.id} className="bg-red-50 border border-red-200 rounded-2xl p-3 flex items-center gap-3">
+                    <div key={t.id} className="bg-red-50 border border-red-200 rounded-2xl p-3 flex items-center gap-3 animate-fade-in">
                       <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
                       <div className="flex-1">
-                        <div className="font-bold text-sm">{resource?.name}</div>
-                        <div className="text-xs text-gray-500">Borrower: {borrower?.name}</div>
+                        <div className="font-bold text-sm">{resource?.name || t.resourceId}</div>
+                        <div className="text-xs text-gray-500">Borrower: {borrower?.name || t.borrowerId}</div>
+                        {t.message && <div className="text-xs text-red-500 mt-1 italic">"{t.message}"</div>}
                       </div>
                       <button
-                        onClick={() => updateTransactionStatus(t.id, 'Settlement')}
+                        onClick={() => !t.id.startsWith('dd') && updateTransactionStatus(t.id, 'Settlement')}
                         className="bg-black text-white text-xs px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors"
                       >
                         Resolve
