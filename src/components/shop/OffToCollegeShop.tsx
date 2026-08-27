@@ -5,11 +5,11 @@ import { useAppContext } from '../../store/AppContext';
 import { PixelTransition } from '../ui/PixelTransition';
 
 const heroTiles = [
-  { name: 'Cameras', active: true },
-  { name: 'Shop all', active: false },
-  { name: 'Accessories', active: false },
-  { name: 'Electronics', active: false },
-  { name: 'Books', active: false },
+  { name: 'Cameras', img: '/Store-items/camera/camera-1.jpg', bg: '#1A1A1A' },
+  { name: 'Shop all', img: '/Store-items/notes/handwrtten-notes-1.jpg', bg: '#2E4A3E' },
+  { name: 'Accessories', img: '/Store-items/tripods/tripod-1.jpg', bg: '#3A2A1A' },
+  { name: 'Electronics', img: '/Store-items/calculator/calculator-1.jpg', bg: '#1A2A3A' },
+  { name: 'Books', img: '/Store-items/textbooks/textbook-1.jpg', bg: '#2A1A3A' },
 ];
 
 const categoryPills = ['All', 'Cameras', 'Accessories', 'Electronics', 'Books'];
@@ -59,17 +59,21 @@ export const OffToCollegeShop = () => {
               <div 
                 key={i} 
                 onClick={() => setSelectedFilter(tile.name === 'Shop all' ? 'All' : tile.name)}
-                className={`relative flex-shrink-0 w-[180px] h-[220px] rounded-xl overflow-hidden cursor-pointer transition-transform hover:-translate-y-1 ${
-                  (selectedFilter === tile.name || (selectedFilter === 'All' && tile.name === 'Shop all')) ? 'border-2 border-black' : ''
+                className={`relative flex-shrink-0 w-[180px] h-[220px] rounded-xl overflow-hidden cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg ${
+                  (selectedFilter === tile.name || (selectedFilter === 'All' && tile.name === 'Shop all')) ? 'ring-3 ring-black ring-offset-2' : ''
                 }`}
-                style={{ backgroundColor: '#D7F24A' }}
               >
-                <div className="absolute top-0 right-0 w-[150%] h-8 bg-white/40 -rotate-45 translate-x-1/4 -translate-y-1/2"></div>
-                <div className="absolute inset-4 bottom-12 flex items-center justify-center">
-                   <div className="w-24 h-24 bg-black/5 rounded-full blur-xl absolute"></div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-11 bg-white flex items-center justify-center">
-                  <span className="font-bold text-black text-sm">{tile.name}</span>
+                {/* Real image fills the tile */}
+                <img src={tile.img} alt={tile.name} className="w-full h-full object-cover" />
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                {/* Active ring indicator */}
+                {(selectedFilter === tile.name || (selectedFilter === 'All' && tile.name === 'Shop all')) && (
+                  <div className="absolute inset-0 ring-4 ring-inset ring-white/40 rounded-xl" />
+                )}
+                {/* Label */}
+                <div className="absolute bottom-0 left-0 right-0 px-3 pb-3">
+                  <span className="font-bold text-white text-sm drop-shadow">{tile.name}</span>
                 </div>
               </div>
             ))}
@@ -102,9 +106,15 @@ export const OffToCollegeShop = () => {
             </h2>
             
             <div className="flex-1 flex justify-center items-center gap-2">
-              <div className="w-16 h-16 bg-white/60 rounded-lg border border-black/5 shadow-sm rotate-[-5deg] flex items-center justify-center overflow-hidden"><img src="/Store-items/camera/camera-1.jpg" className="w-full h-full object-cover mix-blend-multiply"/></div>
-              <div className="w-16 h-16 bg-white/60 rounded-lg border border-black/5 shadow-sm rotate-[2deg] translate-y-2 flex items-center justify-center overflow-hidden"><img src="/Store-items/books/book-1.jpg" className="w-full h-full object-cover mix-blend-multiply"/></div>
-              <div className="w-16 h-16 bg-white/60 rounded-lg border border-black/5 shadow-sm rotate-[8deg] flex items-center justify-center overflow-hidden"><img src="/Store-items/calculator/calculator-1.jpg" className="w-full h-full object-cover mix-blend-multiply"/></div>
+              <div className="w-16 h-16 rounded-lg border border-black/5 shadow-sm rotate-[-5deg] overflow-hidden">
+                <img src="/Store-items/camera/camera-1.jpg" className="w-full h-full object-cover"/>
+              </div>
+              <div className="w-16 h-16 rounded-lg border border-black/5 shadow-sm rotate-[2deg] translate-y-2 overflow-hidden">
+                <img src="/Store-items/books/book-1.jpg" className="w-full h-full object-cover"/>
+              </div>
+              <div className="w-16 h-16 rounded-lg border border-black/5 shadow-sm rotate-[8deg] overflow-hidden">
+                <img src="/Store-items/calculator/calculator-1.jpg" className="w-full h-full object-cover"/>
+              </div>
             </div>
 
             <a href="#" className="font-bold text-black underline hover:no-underline whitespace-nowrap">
@@ -193,7 +203,7 @@ export const OffToCollegeShop = () => {
                       animationStepDuration={0.3}
                       pixelColor="#D7F24A"
                       firstContent={
-                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover mix-blend-multiply opacity-90 group-hover:scale-105 transition-transform duration-500" />
+                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       }
                       secondContent={
                         <div className="w-full h-full bg-[#1A3129] flex flex-col items-center justify-center text-white p-4 text-center">

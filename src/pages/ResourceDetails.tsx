@@ -127,20 +127,32 @@ function ProductTabs({ resource, ownerName, reviews }: {
           </ul>
         )}
         {activeTab === "Reviews" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {reviews.length === 0
-              ? <p className="text-[#7A6A5A]">No reviews yet. Be the first to borrow and rate!</p>
+              ? (
+                <div className="text-center py-8">
+                  <div className="text-3xl mb-3">⭐</div>
+                  <p className="text-[#7A6A5A] font-medium">No reviews yet.</p>
+                  <p className="text-xs text-[#7A6A5A] mt-1">Be the first to borrow and rate this item!</p>
+                </div>
+              )
               : reviews.map((rev, i) => (
-                <div key={i} className="border-b border-[#ECE4D6] pb-4 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-[#00B5C4] text-white flex items-center justify-center font-bold text-sm">{rev.user[0]}</div>
-                    <div>
-                      <p className="font-semibold text-[#2A1A14]">{rev.user}</p>
-                      <p className="text-[10px] text-[#7A6A5A]">{rev.date}</p>
+                <div key={i} className="border-b border-[#ECE4D6] pb-5 last:border-0 last:pb-0">
+                  <div className="flex items-start gap-3 mb-3">
+                    <img
+                      src={`https://i.pravatar.cc/150?u=${encodeURIComponent(rev.user)}`}
+                      alt={rev.user}
+                      className="w-9 h-9 rounded-full object-cover flex-shrink-0 border border-[#ECE4D6]"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-[#2A1A14] text-sm">{rev.user}</p>
+                        <p className="text-[10px] text-[#7A6A5A]">{rev.date}</p>
+                      </div>
+                      <div className="mt-0.5"><Stars rating={rev.rating} /></div>
                     </div>
-                    <div className="ml-auto"><Stars rating={rev.rating} /></div>
                   </div>
-                  <p className="text-xs text-[#4A3A2E] italic">"{rev.quote}"</p>
+                  <p className="text-xs text-[#4A3A2E] leading-relaxed italic pl-12">"{rev.quote}"</p>
                 </div>
               ))
             }
