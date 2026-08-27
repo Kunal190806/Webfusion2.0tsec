@@ -17,6 +17,8 @@ export const AIDiscovery = () => {
   const [matchedItems, setMatchedItems] = useState<(Resource & { matchScore?: number })[]>([]);
   const [apiError, setApiError] = useState(false);
 
+  const categoryFilter = searchParams.get('cat') || 'All';
+
   useEffect(() => {
     const fetchRecommendations = async () => {
       setIsProcessing(true);
@@ -26,8 +28,12 @@ export const AIDiscovery = () => {
         setIsProcessing(false);
         return;
       }
+      
+      const filteredResources = categoryFilter === 'All' 
+        ? resources 
+        : resources.filter(r => r.category === categoryFilter);
 
-      const recommendation = await generateRecommendations(query, resources);
+      const recommendation = await generateRecommendations(query, filteredResources);
       
       if (recommendation) {
         setParsedContext(recommendation);
