@@ -88,7 +88,7 @@ export const OffToCollegeShop = () => {
                 key={i}
                 onClick={() => setSelectedFilter(pill)}
                 className={`flex-shrink-0 h-[40px] px-[20px] rounded-full flex items-center justify-center font-bold transition-opacity ${selectedFilter === pill ? 'bg-black text-white' : 'text-black hover:opacity-90'}`}
-                style={{ backgroundColor: selectedFilter === pill ? '#000' : '#D7F24A' }}
+                style={{ backgroundColor: selectedFilter === pill ? '#000' : '#2EE887' }}
               >
                 {pill}
               </button>
@@ -99,7 +99,7 @@ export const OffToCollegeShop = () => {
         <section>
           <div 
             className="w-full rounded-2xl p-8 flex flex-col md:flex-row justify-between items-center gap-6"
-            style={{ backgroundColor: '#EFECE6', minHeight: '120px' }}
+            style={{ backgroundColor: '#F7F2E8', minHeight: '120px' }}
           >
             <h2 className="text-[24px] font-bold text-black leading-tight max-w-[280px]">
               Our campus essentials edit is here
@@ -201,13 +201,13 @@ export const OffToCollegeShop = () => {
                       className="w-full h-full"
                       gridSize={10}
                       animationStepDuration={0.3}
-                      pixelColor="#D7F24A"
+                      pixelColor="#2EE887"
                       firstContent={
                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       }
                       secondContent={
-                        <div className="w-full h-full bg-[#1A3129] flex flex-col items-center justify-center text-white p-4 text-center">
-                          <Star className="h-6 w-6 text-[#D7F24A] fill-[#D7F24A] mb-2" />
+                        <div className="w-full h-full bg-[#1A1A1A] flex flex-col items-center justify-center text-white p-4 text-center">
+                          <Star className="h-6 w-6 text-[#2EE887] fill-[#2EE887] mb-2" />
                           <div className="font-bold text-lg mb-1">{item.rating} / 5.0</div>
                           <div className="text-xs text-white/70 mb-4">Trusted Owner</div>
                           <button className="w-full bg-white text-black text-xs font-bold h-8 rounded hover:bg-gray-100 transition-colors">
@@ -223,7 +223,7 @@ export const OffToCollegeShop = () => {
                   </h4>
 
                   <div className="flex items-center gap-1 mb-1">
-                    <div className="flex text-[#FF9900]">
+                    <div className="flex text-[#FFD166]">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className={`w-3 h-3 ${i < Math.floor(item.rating) ? 'fill-current' : 'text-gray-300'}`} />
                       ))}

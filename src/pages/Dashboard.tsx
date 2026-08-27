@@ -73,7 +73,7 @@ export const Dashboard = () => {
             showUserInfo={true}
             enableTilt={true}
             className="w-full"
-            innerGradient="linear-gradient(145deg, #16352F 0%, #1A3129 100%)"
+            innerGradient="linear-gradient(145deg, #16352F 0%, #1A1A1A 100%)"
             behindGlowColor="rgba(22, 53, 47, 0.4)"
             onContactClick={() => setIsEditProfileModalOpen(true)}
           />

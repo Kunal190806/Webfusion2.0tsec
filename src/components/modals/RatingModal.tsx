@@ -68,7 +68,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({ transaction, resource,
               <Star 
                 className={`w-10 h-10 ${
                   star <= (hoverRating || rating) 
-                    ? 'fill-[#FF9900] text-[#FF9900]' 
+                    ? 'fill-[#FFD166] text-[#FFD166]' 
                     : 'text-gray-300'
                 }`} 
               />

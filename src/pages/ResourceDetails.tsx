@@ -52,7 +52,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} className={`w-3.5 h-3.5 ${i < rating ? "text-[#CF3A26]" : "text-[#D8CCBF]"}`} fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`w-3.5 h-3.5 ${i < rating ? "text-[#FF5533]" : "text-[#D8CCBF]"}`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
@@ -70,7 +70,7 @@ function ProductGallery({ images, name }: { images: string[]; name: string }) {
       <div className="flex flex-col gap-2 items-center">
         {thumbs.map((src, i) => (
           <button key={i} onClick={() => setActive(i)}
-            className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${active === i ? "border-[#00B5C4]" : "border-[#ECE4D6] hover:border-[#00B5C4]/50"}`}>
+            className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${active === i ? "border-[#2EE887]" : "border-[#ECE4D6] hover:border-[#2EE887]/50"}`}>
             <img src={src} alt="thumb" className="w-full h-full object-cover" />
           </button>
         ))}
@@ -96,7 +96,7 @@ function ProductTabs({ resource, ownerName, reviews }: {
       <div className="flex gap-6 border-b border-[#ECE4D6] pb-3 mb-5 overflow-x-auto">
         {tabs.map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`text-sm font-semibold pb-3 -mb-[13px] border-b-2 transition-colors whitespace-nowrap ${activeTab === tab ? "border-[#00B5C4] text-[#00B5C4]" : "border-transparent text-[#7A6A5A] hover:text-[#00B5C4]"}`}>
+            className={`text-sm font-semibold pb-3 -mb-[13px] border-b-2 transition-colors whitespace-nowrap ${activeTab === tab ? "border-[#2EE887] text-[#2EE887]" : "border-transparent text-[#7A6A5A] hover:text-[#2EE887]"}`}>
             {tab}
           </button>
         ))}
@@ -111,7 +111,7 @@ function ProductTabs({ resource, ownerName, reviews }: {
               ? resource.includedAccessories.map((acc: string, i: number) => (
                   <li key={i} className="flex justify-between items-center max-w-[300px]">
                     <span>{acc}</span>
-                    <span className="font-medium text-[#00B5C4]">Included</span>
+                    <span className="font-medium text-[#2EE887]">Included</span>
                   </li>
                 ))
               : <li className="text-[#7A6A5A]">No additional accessories included.</li>
@@ -166,18 +166,18 @@ function ProductTabs({ resource, ownerName, reviews }: {
 /* ─── Related card ───────────────────────────────────────────────────── */
 function RelatedCard({ resource, onClick }: { resource: any; onClick: () => void }) {
   const [liked, setLiked] = useState(false);
-  const cardColors = ['bg-[#CF3A26]', 'bg-[#F0AEAD]', 'bg-[#A8D4E2]', 'bg-[#FFD166]', 'bg-[#2EE887]'];
+  const cardColors = ['bg-[#FF5533]', 'bg-[#F0AEAD]', 'bg-[#A8D4E2]', 'bg-[#FFD166]', 'bg-[#2EE887]'];
   const color = cardColors[resource.id.length % cardColors.length];
   const img = resource.images[0] || '/Store-items/camera/camera-1.jpg';
 
   return (
     <div className="min-w-[192px] w-48 rounded-2xl overflow-hidden flex-shrink-0 bg-white border border-[#ECE4D6] shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <div className={`relative ${color} h-44`}>
-        <span className="absolute top-2.5 left-2.5 bg-[#00B5C4] text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
+        <span className="absolute top-2.5 left-2.5 bg-[#2EE887] text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
           {resource.isAvailable ? 'Available' : 'Taken'}
         </span>
         <button onClick={e => { e.stopPropagation(); setLiked(!liked); }}
-          className={`absolute top-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center transition-colors ${liked ? "text-[#F28C28]" : "text-[#8A7A6A] hover:text-[#F28C28]"}`}>
+          className={`absolute top-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center transition-colors ${liked ? "text-[#FF5533]" : "text-[#8A7A6A] hover:text-[#FF5533]"}`}>
           <IcoHeart filled={liked} />
         </button>
         <img src={img} alt={resource.name} className="w-full h-full object-cover" />
@@ -185,11 +185,11 @@ function RelatedCard({ resource, onClick }: { resource: any; onClick: () => void
       <div className="p-3 flex items-start justify-between gap-2">
         <div className="min-w-0">
           <span className="font-semibold text-[#2A1A14] text-sm truncate block">{resource.name}</span>
-          <span className="text-[#00B5C4] text-sm font-medium">₹{resource.borrowingCharge}/day</span>
+          <span className="text-[#2EE887] text-sm font-medium">₹{resource.borrowingCharge}/day</span>
           <p className="text-[10px] text-[#7A6A5A] mt-0.5 leading-snug line-clamp-2">{resource.description.slice(0, 60)}...</p>
         </div>
         <button onClick={e => { e.stopPropagation(); onClick(); }}
-          className="w-7 h-7 rounded-full bg-[#00B5C4] text-white flex-shrink-0 flex items-center justify-center hover:bg-[#009BA8] transition-colors">
+          className="w-7 h-7 rounded-full bg-[#2EE887] text-white flex-shrink-0 flex items-center justify-center hover:bg-[#25C170] transition-colors">
           <IcoCart />
         </button>
       </div>
@@ -209,22 +209,22 @@ function RequestModal({ resource, owner, duration, onConfirm, onClose }: {
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
         <h2 className="font-bold text-xl text-[#2A1A14] mb-4">Request to Borrow</h2>
-        <div className="bg-[#FFF9ED] rounded-xl p-4 mb-4 text-sm space-y-2 border border-[#ECE4D6]">
+        <div className="bg-[#F7F2E8] rounded-xl p-4 mb-4 text-sm space-y-2 border border-[#ECE4D6]">
           <div className="flex justify-between"><span className="text-[#7A6A5A]">Item</span><span className="font-semibold text-[#2A1A14]">{resource.name}</span></div>
           <div className="flex justify-between"><span className="text-[#7A6A5A]">Duration</span><span className="font-semibold">{duration} day{duration > 1 ? 's' : ''}</span></div>
           <div className="flex justify-between"><span className="text-[#7A6A5A]">Rental cost</span><span className="font-semibold">₹{total}</span></div>
           <div className="flex justify-between"><span className="text-[#7A6A5A]">Platform fee</span><span className="font-semibold">₹{fee}</span></div>
           <div className="flex justify-between"><span className="text-[#7A6A5A]">Security deposit</span><span className="font-semibold">₹{resource.securityDeposit}</span></div>
-          <div className="flex justify-between pt-2 border-t border-[#ECE4D6]"><span className="font-bold text-[#2A1A14]">Total upfront</span><span className="font-bold text-[#00B5C4]">₹{total + fee + resource.securityDeposit}</span></div>
+          <div className="flex justify-between pt-2 border-t border-[#ECE4D6]"><span className="font-bold text-[#2A1A14]">Total upfront</span><span className="font-bold text-[#2EE887]">₹{total + fee + resource.securityDeposit}</span></div>
         </div>
         <div className="mb-4">
           <label className="text-xs font-semibold text-[#7A6A5A] block mb-1">Message to {owner?.name}</label>
           <textarea value={msg} onChange={e => setMsg(e.target.value)} rows={3}
-            className="w-full border border-[#ECE4D6] rounded-xl p-3 text-sm text-[#2A1A14] outline-none focus:border-[#00B5C4] resize-none" />
+            className="w-full border border-[#ECE4D6] rounded-xl p-3 text-sm text-[#2A1A14] outline-none focus:border-[#2EE887] resize-none" />
         </div>
         <div className="flex gap-3">
-          <button onClick={onClose} className="flex-1 py-2.5 border border-[#ECE4D6] rounded-full text-sm text-[#7A6A5A] hover:border-[#00B5C4] transition-colors">Cancel</button>
-          <button onClick={() => onConfirm(msg)} className="flex-1 py-2.5 bg-[#00B5C4] text-white rounded-full text-sm font-medium hover:bg-[#009BA8] transition-colors">
+          <button onClick={onClose} className="flex-1 py-2.5 border border-[#ECE4D6] rounded-full text-sm text-[#7A6A5A] hover:border-[#2EE887] transition-colors">Cancel</button>
+          <button onClick={() => onConfirm(msg)} className="flex-1 py-2.5 bg-[#2EE887] text-white rounded-full text-sm font-medium hover:bg-[#25C170] transition-colors">
             Send Request 🎉
           </button>
         </div>
@@ -258,11 +258,11 @@ export const ResourceDetails = () => {
 
   if (!resource) {
     return (
-      <div className="min-h-screen bg-[#FFF9ED] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F2E8] flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">🔍</div>
           <h2 className="text-xl font-bold text-[#2A1A14] mb-2">Resource not found</h2>
-          <button onClick={() => navigate('/discover')} className="mt-4 px-6 py-2 bg-[#00B5C4] text-white rounded-full text-sm hover:bg-[#009BA8] transition-colors">
+          <button onClick={() => navigate('/discover')} className="mt-4 px-6 py-2 bg-[#2EE887] text-white rounded-full text-sm hover:bg-[#25C170] transition-colors">
             Browse Discover
           </button>
         </div>
@@ -287,12 +287,12 @@ export const ResourceDetails = () => {
       message: msg,
     });
     setShowModal(false);
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00B5C4', '#F28C28', '#ffffff'] });
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#2EE887', '#FF5533', '#ffffff'] });
     setTimeout(() => navigate('/dashboard?tab=borrowings'), 1500);
   };
 
   return (
-    <div className="min-h-full bg-[#FFF9ED] font-sans">
+    <div className="min-h-full bg-[#F7F2E8] font-sans">
 
       {showModal && (
         <RequestModal
@@ -308,7 +308,7 @@ export const ResourceDetails = () => {
         {/* ── PRODUCT SECTION ── */}
         <section className="max-w-5xl mx-auto px-6 pb-8">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-1 text-sm text-[#7A6A5A] mb-5 pt-5 cursor-pointer hover:text-[#00B5C4] transition-colors w-fit" onClick={() => navigate('/discover')}>
+          <div className="flex items-center gap-1 text-sm text-[#7A6A5A] mb-5 pt-5 cursor-pointer hover:text-[#2EE887] transition-colors w-fit" onClick={() => navigate('/discover')}>
             <IcoChevronLeft />
             <span>{resource.category}</span>
           </div>
@@ -325,8 +325,8 @@ export const ResourceDetails = () => {
                   <Stars rating={Math.round(resource.rating)} />
                   <span className="text-xs text-[#7A6A5A]">{resource.rating.toFixed(1)} · {reviews.length} reviews</span>
                 </div>
-                <div className="flex items-center gap-1 text-[#F28C28] text-xs font-semibold bg-[#FFF9ED] px-2 py-1 rounded-full border border-[#F28C28]/20">
-                  <div className="w-4 h-4 rounded-full bg-[#F28C28] text-white text-[9px] flex items-center justify-center font-bold">
+                <div className="flex items-center gap-1 text-[#FF5533] text-xs font-semibold bg-[#F7F2E8] px-2 py-1 rounded-full border border-[#FF5533]/20">
+                  <div className="w-4 h-4 rounded-full bg-[#FF5533] text-white text-[9px] flex items-center justify-center font-bold">
                     {owner?.name?.[0] || 'U'}
                   </div>
                   {owner?.name || 'Unknown'} ({owner?.rating || 4.5}★)
@@ -335,11 +335,11 @@ export const ResourceDetails = () => {
 
               {/* Title + Price */}
               <div className="flex flex-col gap-1 mt-1">
-                <h1 className="font-serif italic text-[#00B5C4] text-[1.9rem] font-bold leading-tight">
+                <h1 className="font-serif italic text-[#2EE887] text-[1.9rem] font-bold leading-tight">
                   {resource.name}
                 </h1>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-serif italic text-[#004761] text-[2rem] font-bold leading-none">₹{resource.borrowingCharge}</span>
+                  <span className="font-serif italic text-[#1A1A1A] text-[2rem] font-bold leading-none">₹{resource.borrowingCharge}</span>
                   <span className="text-[#8A7A6A] text-sm">/ day</span>
                 </div>
               </div>
@@ -349,11 +349,11 @@ export const ResourceDetails = () => {
 
               {/* Duration selector */}
               <div className="mt-2">
-                <h3 className="font-serif text-[#00B5C4] font-semibold text-sm mb-2">Rental Duration</h3>
+                <h3 className="font-serif text-[#2EE887] font-semibold text-sm mb-2">Rental Duration</h3>
                 <div className="flex gap-2 flex-wrap">
                   {[1, 3, 7].map(days => (
                     <button key={days} onClick={() => setDuration(days)}
-                      className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${duration === days ? 'bg-[#00B5C4] text-white border-[#00B5C4]' : 'bg-white text-[#4A3A2E] border-[#ECE4D6] hover:border-[#00B5C4]'}`}>
+                      className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${duration === days ? 'bg-[#2EE887] text-white border-[#2EE887]' : 'bg-white text-[#4A3A2E] border-[#ECE4D6] hover:border-[#2EE887]'}`}>
                       {days} Day{days > 1 ? 's' : ''}
                     </button>
                   ))}
@@ -362,7 +362,7 @@ export const ResourceDetails = () => {
 
               {/* Details */}
               <div className="mt-1">
-                <h3 className="font-serif text-[#00B5C4] font-semibold text-sm mb-1.5">Details</h3>
+                <h3 className="font-serif text-[#2EE887] font-semibold text-sm mb-1.5">Details</h3>
                 <ul className="text-xs text-[#4A3A2E] space-y-1">
                   {[
                     ["Condition", resource.condition],
@@ -383,12 +383,12 @@ export const ResourceDetails = () => {
                 <button
                   onClick={() => resource.isAvailable ? setShowModal(true) : undefined}
                   disabled={!resource.isAvailable}
-                  className={`flex-1 rounded-full py-2 text-sm font-medium transition-colors ${resource.isAvailable ? 'bg-[#00B5C4] text-white hover:bg-[#009BA8]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                  className={`flex-1 rounded-full py-2 text-sm font-medium transition-colors ${resource.isAvailable ? 'bg-[#2EE887] text-white hover:bg-[#25C170]' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
                   {resource.isAvailable ? 'Request to Borrow' : 'Currently Unavailable'}
                 </button>
                 <button
                   onClick={() => setWishlisted(!wishlisted)}
-                  className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${wishlisted ? "border-[#F28C28] text-[#F28C28] bg-[#FFF0EE]" : "border-[#D4C4B0] text-[#7A6A5A] hover:border-[#F28C28] hover:text-[#F28C28]"}`}>
+                  className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${wishlisted ? "border-[#FF5533] text-[#FF5533] bg-[#FFF0EE]" : "border-[#D4C4B0] text-[#7A6A5A] hover:border-[#FF5533] hover:text-[#FF5533]"}`}>
                   <IcoHeart filled={wishlisted} />
                 </button>
               </div>
@@ -401,13 +401,13 @@ export const ResourceDetails = () => {
 
         {/* ── TRUST BANNER ── */}
         <section className="max-w-5xl mx-auto px-6 mb-12">
-          <div className="bg-[#F28C28] rounded-2xl flex items-center gap-6 px-8 py-7 overflow-hidden">
+          <div className="bg-[#FF5533] rounded-2xl flex items-center gap-6 px-8 py-7 overflow-hidden">
             <div className="flex-1 flex flex-col gap-3">
               <h2 className="font-serif italic text-white text-[1.9rem] font-bold leading-tight">Student Verified</h2>
               <p className="text-white/90 text-sm leading-relaxed max-w-[300px]">
                 Rent with confidence! Campus Circular verifies every student and holds security deposits to ensure your gear is safe and returns are smooth.
               </p>
-              <button onClick={() => navigate('/impact')} className="self-start mt-1 px-5 py-2 bg-white text-[#F28C28] text-sm font-medium rounded-full hover:bg-white/90 transition-colors">
+              <button onClick={() => navigate('/impact')} className="self-start mt-1 px-5 py-2 bg-white text-[#FF5533] text-sm font-medium rounded-full hover:bg-white/90 transition-colors">
                 Learn More
               </button>
             </div>
@@ -423,14 +423,14 @@ export const ResourceDetails = () => {
         {/* ── YOU MIGHT LIKE ── */}
         {related.length > 0 && (
           <section className="max-w-5xl mx-auto px-6 mb-12">
-            <h2 className="font-serif italic text-[#00B5C4] text-[1.9rem] font-bold mb-5">You might like</h2>
+            <h2 className="font-serif italic text-[#2EE887] text-[1.9rem] font-bold mb-5">You might like</h2>
             <div className="flex gap-4 overflow-x-auto pb-2">
               {related.map(r => (
                 <RelatedCard key={r.id} resource={r} onClick={() => navigate(`/resource/${r.id}`)} />
               ))}
             </div>
             <div className="flex justify-end mt-5">
-              <button onClick={() => navigate('/discover')} className="px-8 py-2 border border-[#00B5C4] text-[#00B5C4] rounded-full text-sm font-medium hover:bg-[#00B5C4] hover:text-white transition-colors">
+              <button onClick={() => navigate('/discover')} className="px-8 py-2 border border-[#2EE887] text-[#2EE887] rounded-full text-sm font-medium hover:bg-[#2EE887] hover:text-white transition-colors">
                 Browse all →
               </button>
             </div>
@@ -439,12 +439,12 @@ export const ResourceDetails = () => {
       </main>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-[#004761] text-white">
+      <footer className="bg-[#1A1A1A] text-white">
         <div className="max-w-5xl mx-auto px-6 pt-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-[auto_repeat(3,1fr)_1.6fr] gap-8 items-start">
             <div className="pr-4">
-              <h2 className="font-serif italic text-4xl font-bold leading-none text-[#00B5C4]">
-                Campus<br /><span className="text-[#F28C28]">Circular</span>
+              <h2 className="font-serif italic text-4xl font-bold leading-none text-[#2EE887]">
+                Campus<br /><span className="text-[#FF5533]">Circular</span>
               </h2>
             </div>
             {[

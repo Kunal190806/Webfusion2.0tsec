@@ -119,10 +119,10 @@ export const AdminPortal = () => {
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] font-sans text-black p-4 flex gap-6">
+    <div className="min-h-screen bg-[#F7F2E8] font-sans text-black p-4 flex gap-6">
       
       {/* LEFT SIDEBAR */}
-      <aside className="w-64 bg-[#18181A] text-white rounded-[2rem] p-6 flex flex-col relative shrink-0">
+      <aside className="w-64 bg-[#1A1A1A] text-white rounded-[2rem] p-6 flex flex-col relative shrink-0">
         <div className="flex items-center gap-2 mb-10 mt-2">
           <div className="font-serif text-2xl font-bold tracking-tight">Campus<br/>Circular</div>
         </div>
@@ -167,7 +167,7 @@ export const AdminPortal = () => {
         {/* Search Bar */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4 flex-1">
-            <div className="w-10 h-10 rounded-full bg-[#F6A8D0] flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-[#FF5533] flex items-center justify-center shrink-0 shadow-sm">
               <Search className="w-4 h-4 text-black" />
             </div>
             <div className="bg-[#F5F2EB] rounded-full px-6 py-2 flex items-center gap-2 flex-1 max-w-xl border border-transparent focus-within:border-gray-200 transition-colors">
@@ -197,7 +197,7 @@ export const AdminPortal = () => {
         <div className="grid grid-cols-[1fr_1.5fr] gap-4 mb-6">
           
           {/* Yellow: Users */}
-          <div className="bg-[#F4D068] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+          <div className="bg-[#FFD166] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
             <div className="absolute -top-4 -right-4 text-[#E5C057] opacity-50 rotate-12 select-none" style={{ fontSize: '140px', lineHeight: 1 }}>+</div>
             <div>
               <h3 className="font-bold text-lg mb-4">Active users:</h3>
@@ -221,7 +221,7 @@ export const AdminPortal = () => {
           </div>
 
           {/* Pink: Transaction Revenue */}
-          <div className="bg-[#F6A8D0] rounded-3xl p-6 relative overflow-hidden flex flex-col min-h-[220px]">
+          <div className="bg-[#FF5533] rounded-3xl p-6 relative overflow-hidden flex flex-col min-h-[220px]">
             <div className="absolute top-4 -right-4 text-[#ECA0C6] opacity-60 select-none" style={{ fontSize: '180px', lineHeight: 0.5 }}>♥</div>
             <div className="flex justify-between items-start mb-6 z-10">
               <div>
@@ -258,7 +258,7 @@ export const AdminPortal = () => {
 
         <div className="grid grid-cols-[1fr_1fr] gap-4 mb-8">
           {/* Green: Categories from real data */}
-          <div className="bg-[#9EB070] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px]">
+          <div className="bg-[#2EE887] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#92A367] rounded-bl-[100px] -z-0"></div>
             <h3 className="font-bold text-lg mb-3 relative z-10">By category:</h3>
             <div className="flex gap-4 flex-wrap relative z-10">
@@ -272,7 +272,7 @@ export const AdminPortal = () => {
           </div>
 
           {/* Blue: Platform health from real data */}
-          <div className="bg-[#8EA7D3] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px]">
+          <div className="bg-[#4B6EFF] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center min-h-[140px]">
             <h3 className="font-bold text-lg mb-3 relative z-10">Health:</h3>
             <div className="flex gap-4 relative z-10">
               <div>
@@ -371,18 +371,18 @@ export const AdminPortal = () => {
               <div className="space-y-4">
                 <h3 className="font-bold text-lg mb-4 px-2">Billing Overview</h3>
                 {/* Revenue summary cards */}
-                <div className="bg-[#F4D068] rounded-2xl p-5">
+                <div className="bg-[#FFD166] rounded-2xl p-5">
                   <div className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1">Total Platform Revenue</div>
                   <div className="text-3xl font-black">₹{(allTx.filter(t => t.status === 'Rated').reduce((s, t) => s + t.platformFee, 0) + 1245).toLocaleString('en-IN')}</div>
                   <div className="text-xs text-black/60 mt-1">across {allTx.length} transactions</div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-[#F6A8D0] rounded-2xl p-4">
+                  <div className="bg-[#FF5533] rounded-2xl p-4">
                     <div className="text-[10px] font-bold text-black/50 uppercase tracking-wider mb-1">Completed</div>
                     <div className="text-2xl font-black">{allTx.filter(t => t.status === 'Rated').length}</div>
                     <div className="text-xs text-black/50">transactions</div>
                   </div>
-                  <div className="bg-[#9EB070] rounded-2xl p-4">
+                  <div className="bg-[#2EE887] rounded-2xl p-4">
                     <div className="text-[10px] font-bold text-black/50 uppercase tracking-wider mb-1">Deposits held</div>
                     <div className="text-2xl font-black">₹{allTx.filter(t => ['Borrowed','Accepted','Handover'].includes(t.status)).reduce((s, t) => s + t.securityDeposit, 0).toLocaleString('en-IN')}</div>
                     <div className="text-xs text-black/50">in escrow</div>
@@ -457,7 +457,7 @@ export const AdminPortal = () => {
       <aside className="w-72 flex flex-col shrink-0">
         {/* Calendar Header */}
         <div className="flex justify-end gap-2 mb-8">
-          <div className="px-4 py-1.5 bg-[#F6A8D0] rounded-full text-xs font-bold">{month}</div>
+          <div className="px-4 py-1.5 bg-[#FF5533] rounded-full text-xs font-bold">{month}</div>
         </div>
 
         {/* Live Calendar */}
@@ -473,7 +473,7 @@ export const AdminPortal = () => {
               return (
                 <div key={i} className="flex justify-center">
                   <div className={`w-6 h-6 flex items-center justify-center rounded-full text-xs relative
-                    ${isToday ? 'bg-[#F6A8D0] font-bold text-black' : 'text-gray-600 hover:bg-gray-100 cursor-pointer'}`}>
+                    ${isToday ? 'bg-[#FF5533] font-bold text-black' : 'text-gray-600 hover:bg-gray-100 cursor-pointer'}`}>
                     {day}
                     {hasTx && !isToday && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#16352F] rounded-full"></span>}
                   </div>
@@ -501,10 +501,10 @@ export const AdminPortal = () => {
               <div key={i} className={`flex items-start gap-4 relative ${ev.highlight ? 'z-10' : ''}`}>
                 {ev.highlight && <div className="absolute top-3 left-0 right-0 h-px border-t border-dashed border-yellow-400 -z-10"></div>}
                 <div className="text-[10px] font-bold text-gray-400 mt-1 w-8 shrink-0">{ev.time}</div>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-4 border-[#FFFDF8] ${ev.color}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-4 border-[#F7F2E8] ${ev.color}`}>
                   {ev.icon}
                 </div>
-                <div className={`flex-1 rounded-2xl p-3 ${ev.highlight ? 'bg-[#FDF6E3] border border-[#F4D068]/30' : 'bg-[#F5F2EB]'}`}>
+                <div className={`flex-1 rounded-2xl p-3 ${ev.highlight ? 'bg-[#FDF6E3] border border-[#FFD166]/30' : 'bg-[#F5F2EB]'}`}>
                   <div className="font-bold text-xs mb-1">{ev.title}</div>
                   <div className="text-[10px] text-gray-500 leading-tight">{ev.desc}</div>
                 </div>
@@ -536,7 +536,7 @@ const NavItem = ({ icon, label, active = false, onClick }: { icon: React.ReactNo
   </div>
 );
 
-const rowColors = ['bg-[#F6A8D0]', 'bg-[#D3E4F6]', 'bg-[#FCE3EA]', 'bg-[#E3E9D2]', 'bg-[#FFF3CD]'];
+const rowColors = ['bg-[#FF5533]', 'bg-[#D3E4F6]', 'bg-[#FCE3EA]', 'bg-[#E3E9D2]', 'bg-[#FFF3CD]'];
 
 const TransactionRow = ({ t, resource, borrower, index, onClick, isSelected }: {
   t: Transaction; resource?: Resource; borrower?: User; index: number; onClick: () => void; isSelected: boolean;
@@ -606,7 +606,7 @@ const TxDetailPanel = ({ tx, resources, users, updateTransactionStatus }: {
   if (tx.status === 'Disputed') statusActions.push({ label: 'Resolve Dispute', nextStatus: 'Settlement', color: 'bg-orange-500' });
 
   return (
-    <div className="bg-[#F6A8D0] rounded-3xl p-6 h-[calc(100%-2.5rem)] overflow-y-auto">
+    <div className="bg-[#FF5533] rounded-3xl p-6 h-[calc(100%-2.5rem)] overflow-y-auto">
       <div className="flex justify-between items-start mb-4">
         <div>
           <div className="font-bold text-lg leading-tight">{resource?.name || 'Unknown Resource'}</div>
