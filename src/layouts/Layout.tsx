@@ -28,9 +28,9 @@ export const Layout = () => {
           {/* Centered Nav */}
           <nav className="hidden md:flex items-center gap-10">
             <Link to="/discover" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Discover</Link>
-            <Link to="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Borrowings</Link>
-            <Link to="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Listings</Link>
-            <Link to="/dashboard" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Requests</Link>
+            <Link to="/dashboard?tab=borrowings" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Borrowings</Link>
+            <Link to="/dashboard?tab=listings" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Listings</Link>
+            <Link to="/dashboard?tab=requests" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Requests</Link>
             <Link to="/impact" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">Impact</Link>
             <Link to="/admin" className="text-sm font-bold text-red-500 hover:text-red-700 transition-colors bg-red-50 px-2 py-1 rounded">Admin</Link>
           </nav>

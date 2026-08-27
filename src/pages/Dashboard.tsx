@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../store/AppContext';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Plus, Settings } from 'lucide-react';
 import { ProfileCard } from '../components/ui/ProfileCard';
@@ -11,7 +12,26 @@ import { EditProfileModal } from '../components/modals/EditProfileModal';
 
 export const Dashboard = () => {
   const { transactions, resources, users, updateTransactionStatus, processSettlement, submitRating } = useAppContext();
-  const [activeTab, setActiveTab] = useState<'borrowings' | 'listings'>('borrowings');
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Read ?tab= from the URL, default to 'borrowings'
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'borrowings' | 'listings'>(
+    tabParam === 'listings' ? 'listings' : 'borrowings'
+  );
+
+  // Keep tab in sync when URL changes (e.g. user clicks nav link while already on dashboard)
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t === 'listings') setActiveTab('listings');
+    else setActiveTab('borrowings');
+  }, [searchParams]);
+
+  const handleTabChange = (tab: 'borrowings' | 'listings') => {
+    setActiveTab(tab);
+    setSearchParams({ tab });
+  };
+
   const [selectedTransactionForSettlement, setSelectedTransactionForSettlement] = useState<any>(null);
   const [selectedTransactionForRating, setSelectedTransactionForRating] = useState<any>(null);
   const [isAddResourceModalOpen, setIsAddResourceModalOpen] = useState(false);
@@ -64,13 +84,13 @@ export const Dashboard = () => {
           <div className="flex border-b border-border">
             <button 
               className={`pb-3 px-1 mr-8 text-sm font-bold tracking-wider uppercase border-b-2 transition-colors ${activeTab === 'borrowings' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              onClick={() => setActiveTab('borrowings')}
+              onClick={() => handleTabChange('borrowings')}
             >
               My Borrowings
             </button>
             <button 
               className={`pb-3 px-1 text-sm font-bold tracking-wider uppercase border-b-2 transition-colors ${activeTab === 'listings' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              onClick={() => setActiveTab('listings')}
+              onClick={() => handleTabChange('listings')}
             >
               My Listings
             </button>
