@@ -3,6 +3,7 @@ import { useAppContext } from '../store/AppContext';
 import { Button } from '../components/ui/button';
 import { Plus, Settings } from 'lucide-react';
 import { ProfileCard } from '../components/ui/ProfileCard';
+import { ConfettiButton } from '../components/ui/confetti';
 
 export const Dashboard = () => {
   const { transactions, resources, users, updateTransactionStatus } = useAppContext();
@@ -22,9 +23,9 @@ export const Dashboard = () => {
         </div>
         <div className="flex gap-3">
           <Button variant="outline"><Settings className="h-4 w-4 mr-2" /> Settings</Button>
-          <Button className="bg-[#16352F] text-white hover:bg-[#0D2621]">
+          <ConfettiButton className="bg-[#16352F] text-white hover:bg-[#0D2621]">
             <Plus className="h-4 w-4 mr-2" /> List New Resource
-          </Button>
+          </ConfettiButton>
         </div>
       </div>
 

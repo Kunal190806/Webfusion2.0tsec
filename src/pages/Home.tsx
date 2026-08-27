@@ -5,6 +5,8 @@ import { Button } from '../components/ui/button';
 
 import { ScrollExpand } from '../components/ui/ScrollExpand';
 import { PixelTransition } from '../components/ui/PixelTransition';
+import { TypingAnimation } from '../components/ui/typing-animation';
+import { MorphingText } from '../components/ui/morphing-text';
 
 const categories = [
   { name: 'Electronics', icon: Monitor },
@@ -30,6 +32,19 @@ export const Home = () => {
     }
   };
 
+  const morphTexts = [
+    `<span class="font-serif text-[4.5rem] leading-[1.05] tracking-tight text-white drop-shadow-xl">Campus Circular</span>`,
+    `<div class="flex flex-col items-center justify-center w-full">
+      <h2 class="font-serif text-[4.5rem] leading-[1.05] tracking-tight mb-6 text-white drop-shadow-xl">
+        Borrow what you need.<br />
+        Share what you have.
+      </h2>
+      <p class="text-[1.1rem] leading-relaxed max-w-lg mx-auto text-white/90 drop-shadow-md font-sans">
+        Access useful resources across your campus<br />without buying things you only need temporarily.
+      </p>
+    </div>`
+  ];
+
   return (
     <div className="flex flex-col bg-background font-sans min-h-screen">
       
@@ -38,17 +53,11 @@ export const Home = () => {
         <ScrollExpand
           src="/HeroImage.jpg"
           alt="Product hero"
-          title="Campus Circular"
+          title={<TypingAnimation>Campus Circular</TypingAnimation>}
           scrollHint="Scroll"
           useWindowScroll
         >
-          <h2 className="font-serif text-[4.5rem] leading-[1.05] tracking-tight mb-6 text-white drop-shadow-xl">
-            Borrow what you need.<br />
-            <span className="text-primary-light">Share</span> what you have.
-          </h2>
-          <p className="text-[1.1rem] leading-relaxed max-w-lg mx-auto text-white/90 drop-shadow-md">
-            Access useful resources across your campus<br />without buying things you only need temporarily.
-          </p>
+          <MorphingText texts={morphTexts} />
         </ScrollExpand>
       </section>
 

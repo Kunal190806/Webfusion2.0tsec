@@ -13,13 +13,16 @@ export const Layout = () => {
         <div className="container mx-auto px-6 flex h-20 items-center justify-between max-w-[1400px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent -rotate-45"></div>
-            </div>
-            <div className="leading-tight">
-              <div className="font-bold text-sm tracking-widest text-foreground uppercase">Campus</div>
-              <div className="font-bold text-sm tracking-widest text-foreground uppercase">Circular</div>
-            </div>
+            <img 
+              src="/Campus Circular logo/CC-logo-DESKTOP.svg" 
+              alt="Campus Circular Logo" 
+              className="h-10 w-auto object-contain hidden md:block" 
+            />
+            <img 
+              src="/Campus Circular logo/CC-logo-mobile.svg" 
+              alt="Campus Circular Logo" 
+              className="h-8 w-auto object-contain md:hidden" 
+            />
           </Link>
           
           {/* Centered Nav */}

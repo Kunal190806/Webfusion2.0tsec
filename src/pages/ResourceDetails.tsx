@@ -4,6 +4,8 @@ import { useAppContext } from '../store/AppContext';
 import { Button } from '../components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Stepper, { Step } from '../components/ui/Stepper';
+import { Marquee } from '../components/ui/marquee';
+import confetti from 'canvas-confetti';
 
 export const ResourceDetails = () => {
   const { id } = useParams();
@@ -14,6 +16,14 @@ export const ResourceDetails = () => {
   const owner = users.find(u => u.id === resource?.ownerId);
   
   const [step, setStep] = useState(0); // 0: details, 1: request, 2: confirm
+
+  const reviews = [
+    { text: "Great quality, highly recommend!", author: "Alice M." },
+    { text: "Saved me a ton of money for my project.", author: "Bob S." },
+    { text: "The owner was very helpful and responsive.", author: "Charlie K." },
+    { text: "Perfect condition, exactly as described.", author: "Diana R." },
+    { text: "Seamless borrowing experience. 10/10.", author: "Eve T." },
+  ];
 
   if (!resource || !owner) {
     return <div className="p-8 text-center">Resource not found</div>;
@@ -37,7 +47,18 @@ export const ResourceDetails = () => {
       message: 'Hi, I need this for a college event.'
     });
     
-    navigate('/dashboard');
+    // Fire confetti from the center of the screen
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#16352F', '#5227FF', '#ffffff', '#e5e5e5']
+    });
+
+    // Wait 1.5s then navigate
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 1500);
   };
 
   return (
@@ -83,6 +104,22 @@ export const ResourceDetails = () => {
               <div>
                 <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase mb-4">Borrowing Rules</h3>
                 <p className="text-sm text-foreground">{resource.borrowingRules}</p>
+              </div>
+
+              <div className="pt-8 border-t border-border">
+                <h3 className="text-xs font-bold tracking-widest text-muted-foreground uppercase mb-6">Recent Reviews</h3>
+                <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+                  <Marquee pauseOnHover className="[--duration:20s]">
+                    {reviews.map((review, i) => (
+                      <div key={i} className="flex flex-col justify-between w-64 p-4 border border-border/50 rounded-xl bg-card shadow-sm h-32">
+                        <p className="text-sm text-foreground italic line-clamp-3">"{review.text}"</p>
+                        <p className="text-xs font-bold tracking-widest text-muted-foreground mt-4 uppercase">— {review.author}</p>
+                      </div>
+                    ))}
+                  </Marquee>
+                  <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background dark:from-background"></div>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background dark:from-background"></div>
+                </div>
               </div>
             </div>
           </div>

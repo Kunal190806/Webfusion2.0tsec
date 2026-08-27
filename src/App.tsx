@@ -8,8 +8,8 @@ import { Home } from './pages/Home';
 import { AIDiscovery } from './pages/AIDiscovery';
 import { ResourceDetails } from './pages/ResourceDetails';
 import { Dashboard } from './pages/Dashboard';
+import { Discover } from './pages/Discover';
 
-const Discover = () => <div className="p-8">Discover Page</div>;
 const Admin = () => <div className="p-8">Admin Dashboard</div>;
 const Impact = () => <div className="p-8">Campus Impact</div>;
 

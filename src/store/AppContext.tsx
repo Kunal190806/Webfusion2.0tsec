@@ -26,7 +26,7 @@ const INITIAL_STATE = {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('campusCircularState');
+    const saved = localStorage.getItem('campusCircularStateV3');
     if (saved) {
       return JSON.parse(saved);
     }
@@ -37,7 +37,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   useEffect(() => {
-    localStorage.setItem('campusCircularState', JSON.stringify(state));
+    localStorage.setItem('campusCircularStateV3', JSON.stringify(state));
   }, [state]);
 
   const addRequest = (transactionData: Omit<Transaction, 'id' | 'status'>) => {
